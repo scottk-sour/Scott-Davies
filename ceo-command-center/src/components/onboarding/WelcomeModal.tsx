@@ -33,7 +33,7 @@ export function WelcomeModal({ isOpen, onComplete }: WelcomeModalProps) {
         <DialogHeader>
           <DialogTitle className="text-2xl flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
-            Welcome to Etsy Organizer!
+            Welcome to Etsy Organiser!
           </DialogTitle>
           <DialogDescription className="text-base">
             Your all-in-one hub for running a successful Etsy shop. Here's what you can do:

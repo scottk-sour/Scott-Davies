@@ -12,12 +12,12 @@ export default function AuthLayout({
       <div className="hidden lg:flex lg:flex-1 bg-primary flex-col justify-between p-12 text-primary-foreground">
         <Link href="/" className="flex items-center gap-2">
           <Package className="h-8 w-8" />
-          <span className="text-2xl font-bold">Etsy Organizer</span>
+          <span className="text-2xl font-bold">Etsy Organiser</span>
         </Link>
 
         <div className="space-y-6">
           <h2 className="text-4xl font-bold">
-            Your Etsy Shop, Organized
+            Your Etsy Shop, Organised
           </h2>
           <p className="text-lg text-primary-foreground/80">
             Stop juggling spreadsheets and browser tabs. Manage your entire shop from one dashboard.

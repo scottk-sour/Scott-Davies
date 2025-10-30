@@ -63,7 +63,7 @@ export default function SignupPage() {
       <CardHeader>
         <CardTitle>Create your account</CardTitle>
         <CardDescription>
-          Get your Etsy shop organized. Free to start.
+          Get your Etsy shop organised. Free to start.
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>

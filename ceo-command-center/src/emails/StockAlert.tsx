@@ -92,7 +92,7 @@ export default function StockAlertEmail({
           </Section>
 
           <Text style={footer}>
-            This is an automated alert from Etsy Organizer.
+            This is an automated alert from Etsy Organiser.
             <br />
             <Link href={shopUrl + '/../settings'} style={link}>
               Manage your notification settings

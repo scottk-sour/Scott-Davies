@@ -85,7 +85,7 @@ export async function POST(request: Request) {
         }));
 
         await resend.emails.send({
-          from: process.env.EMAIL_FROM || 'Etsy Organizer <notifications@etsyorganizer.com>',
+          from: process.env.EMAIL_FROM || 'Etsy Organiser <notifications@etsyorganizer.com>',
           to: user.email,
           subject: `Low Stock Alert - ${products.filter(p => p.currentStock === 0).length > 0 ? 'Out of Stock Items' : 'Low Inventory'}`,
           react: StockAlertEmail({

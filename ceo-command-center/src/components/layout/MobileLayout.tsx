@@ -49,7 +49,7 @@ export function MobileLayout({ user, children }: MobileLayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <span className="font-bold">Etsy Organizer</span>
+          <span className="font-bold">Etsy Organiser</span>
           <div className="w-9" /> {/* Spacer for centering */}
         </div>
 

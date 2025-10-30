@@ -47,7 +47,7 @@ export function Sidebar({ user, onNavigate }: SidebarProps) {
           onClick={onNavigate}
         >
           <Package className="h-6 w-6 text-primary" />
-          <span className="font-bold">Etsy Organizer</span>
+          <span className="font-bold">Etsy Organiser</span>
         </Link>
       </div>
 

@@ -14,7 +14,7 @@ export default function LandingPage() {
             <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <Package className="h-5 w-5 md:h-6 md:w-6 text-white" />
             </div>
-            <span className="text-lg md:text-xl font-bold">Etsy Organizer</span>
+            <span className="text-lg md:text-xl font-bold">Etsy Organiser</span>
           </div>
           <nav className="flex items-center gap-2 md:gap-4">
             <Link href="/pricing" className="hidden sm:block">
@@ -244,7 +244,7 @@ export default function LandingPage() {
                 </div>
                 <CardTitle className="text-lg md:text-xl">Order Management</CardTitle>
                 <CardDescription className="text-sm md:text-base">
-                  All your orders in one view. Track fulfillment status. Add tracking numbers. Stay organized.
+                  All your orders in one view. Track fulfillment status. Add tracking numbers. Stay organised.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -708,9 +708,9 @@ export default function LandingPage() {
               <div className="h-6 w-6 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <Package className="h-4 w-4 text-white" />
               </div>
-              <span className="font-semibold">Etsy Organizer</span>
+              <span className="font-semibold">Etsy Organiser</span>
             </div>
-            <p>© 2025 Etsy Organizer. All rights reserved.</p>
+            <p>© 2025 Etsy Organiser. All rights reserved.</p>
             <p className="mt-1">Built for Etsy sellers who want to stop stressing and start selling.</p>
           </div>
         </div>

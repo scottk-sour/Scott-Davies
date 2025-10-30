@@ -15,7 +15,7 @@ type SendEmailOptions = {
 export async function sendEmail({ to, subject, react }: SendEmailOptions) {
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Etsy Organizer <noreply@etsyorganizer.com>',
+      from: process.env.EMAIL_FROM || 'Etsy Organiser <noreply@etsyorganizer.com>',
       to,
       subject,
       react,
