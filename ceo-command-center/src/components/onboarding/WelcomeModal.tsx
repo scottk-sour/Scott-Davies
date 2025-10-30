@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { CheckCircle2, Target, Calendar, FolderKanban, Sparkles } from 'lucide-react'
+import { Package, ShoppingCart, TrendingUp, Bell, Sparkles } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 
@@ -43,68 +43,54 @@ export function WelcomeModal({ isOpen, onComplete }: WelcomeModalProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
           <Card>
             <CardHeader>
-              <CheckCircle2 className="h-8 w-8 text-green-500 mb-2" />
-              <CardTitle className="text-lg">Smart Task Management</CardTitle>
+              <Package className="h-8 w-8 text-blue-500 mb-2" />
+              <CardTitle className="text-lg">Product Inventory</CardTitle>
               <CardDescription>
-                Prioritize by urgency (P0-P3). Track product photography, listing creation, customer messages, and shipping - all in one place.
+                Track all your Etsy products in one place. Monitor stock levels, costs, prices, and get alerts when inventory runs low.
               </CardDescription>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader>
-              <FolderKanban className="h-8 w-8 text-blue-500 mb-2" />
-              <CardTitle className="text-lg">Product Launch Projects</CardTitle>
+              <ShoppingCart className="h-8 w-8 text-green-500 mb-2" />
+              <CardTitle className="text-lg">Order Management</CardTitle>
               <CardDescription>
-                Group tasks into projects like "Holiday Collection" or "Spring Catalog". Track progress from design to listing automatically.
+                View all orders with automatic profit calculations. Track fulfilment status, add tracking numbers, and manage customer orders efficiently.
               </CardDescription>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader>
-              <Target className="h-8 w-8 text-purple-500 mb-2" />
-              <CardTitle className="text-lg">Revenue Goals</CardTitle>
+              <TrendingUp className="h-8 w-8 text-purple-500 mb-2" />
+              <CardTitle className="text-lg">Profit Calculator</CardTitle>
               <CardDescription>
-                Set monthly/quarterly revenue targets with measurable milestones. Track listings created, sales targets, and profit goals.
+                Calculate true profit margins including all Etsy fees (listing, transaction, payment processing). Make informed pricing decisions in GBP.
               </CardDescription>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader>
-              <Calendar className="h-8 w-8 text-orange-500 mb-2" />
-              <CardTitle className="text-lg">Daily Shop Habits</CardTitle>
+              <Bell className="h-8 w-8 text-orange-500 mb-2" />
+              <CardTitle className="text-lg">Stock Alerts</CardTitle>
               <CardDescription>
-                Build consistency with habits like "List 1 product daily" or "Respond to messages within 4 hours". Track streaks and grow your shop.
+                Get automatic email notifications when products run low or go out of stock. Never miss a sale due to inventory issues.
               </CardDescription>
             </CardHeader>
           </Card>
         </div>
 
-        <Card className="bg-muted/50">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <Checkbox
-                id="sample-data"
-                checked={createSampleData}
-                onCheckedChange={(checked) => setCreateSampleData(checked === true)}
-              />
-              <div className="flex-1">
-                <Label htmlFor="sample-data" className="cursor-pointer font-semibold">
-                  Load example Etsy shop data to explore features
-                </Label>
-                <p className="text-sm text-muted-foreground mt-1">
-                  We'll create a sample "Holiday Collection Launch" project, "$10k revenue" goal, example tasks like product photography and customer messages, and a daily listing habit. You can delete them anytime.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 my-6">
+          <p className="text-sm text-blue-900">
+            <strong>💡 Getting Started:</strong> Start by adding your products in the Products page, then track orders as they come in. Use the Profit Calculator to optimise your pricing!
+          </p>
+        </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2">
           <div className="flex-1 text-sm text-muted-foreground">
-            Tip: Track your top 5 shop priorities as P0/P1 tasks
+            Ready to organise your Etsy shop?
           </div>
           <Button onClick={handleGetStarted} disabled={loading} size="lg">
             {loading ? 'Setting up...' : "Let's Get Started"}
