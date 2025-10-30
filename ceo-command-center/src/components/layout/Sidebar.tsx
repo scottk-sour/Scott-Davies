@@ -27,9 +27,10 @@ type SidebarProps = {
     name?: string | null
     email?: string | null
   }
+  onNavigate?: () => void
 }
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar({ user, onNavigate }: SidebarProps) {
   const pathname = usePathname()
 
   const handleSignOut = () => {
@@ -40,7 +41,11 @@ export function Sidebar({ user }: SidebarProps) {
     <div className="flex h-full w-64 flex-col border-r bg-card">
       {/* Logo */}
       <div className="flex h-16 items-center border-b px-6">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2"
+          onClick={onNavigate}
+        >
           <Package className="h-6 w-6 text-primary" />
           <span className="font-bold">Etsy Organizer</span>
         </Link>
@@ -54,6 +59,7 @@ export function Sidebar({ user }: SidebarProps) {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 isActive

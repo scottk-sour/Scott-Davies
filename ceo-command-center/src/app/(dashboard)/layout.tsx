@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import { Sidebar } from '@/components/layout/Sidebar'
+import { MobileLayout } from '@/components/layout/MobileLayout'
 
 export default async function DashboardLayout({
   children,
@@ -13,14 +13,5 @@ export default async function DashboardLayout({
     redirect('/login')
   }
 
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar user={session.user} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="container py-8">
-          {children}
-        </div>
-      </main>
-    </div>
-  )
+  return <MobileLayout user={session.user}>{children}</MobileLayout>
 }

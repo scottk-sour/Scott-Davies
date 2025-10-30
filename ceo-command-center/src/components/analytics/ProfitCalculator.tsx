@@ -21,20 +21,20 @@ export function ProfitCalculator() {
 
   return (
     <Card className="border-none shadow-lg overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 pb-6">
+      <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 pb-4 md:pb-6">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-            <DollarSign className="h-6 w-6 text-green-600" />
+          <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-green-100 flex items-center justify-center">
+            <DollarSign className="h-5 w-5 md:h-6 md:w-6 text-green-600" />
           </div>
           <div>
-            <CardTitle className="text-2xl">Profit Calculator</CardTitle>
-            <CardDescription className="text-base mt-1">
+            <CardTitle className="text-xl md:text-2xl">Profit Calculator</CardTitle>
+            <CardDescription className="text-sm md:text-base mt-1">
               Calculate your net profit after all Etsy fees
             </CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-8 p-6">
+      <CardContent className="space-y-6 md:space-y-8 p-4 md:p-6">
         {/* Input Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
@@ -164,24 +164,24 @@ export function ProfitCalculator() {
           </div>
 
           {/* Net Profit - Hero Section */}
-          <div className={`p-6 rounded-xl shadow-lg ${
+          <div className={`p-4 md:p-6 rounded-xl shadow-lg ${
             isNegativeProfit
               ? 'bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200'
               : 'bg-gradient-to-br from-green-50 to-emerald-100 border-2 border-green-200'
           }`}>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className={`h-12 w-12 rounded-full ${
+                <div className={`h-10 w-10 md:h-12 md:w-12 rounded-full ${
                   isNegativeProfit ? 'bg-red-200' : 'bg-green-200'
                 } flex items-center justify-center`}>
-                  <TrendingUp className={`h-6 w-6 ${
+                  <TrendingUp className={`h-5 w-5 md:h-6 md:w-6 ${
                     isNegativeProfit ? 'text-red-700' : 'text-green-700'
                   }`} />
                 </div>
-                <span className="text-xl font-bold">Net Profit</span>
+                <span className="text-lg md:text-xl font-bold">Net Profit</span>
               </div>
-              <div className="text-right">
-                <p className={`text-4xl font-bold ${
+              <div className="text-left sm:text-right w-full sm:w-auto">
+                <p className={`text-3xl md:text-4xl font-bold ${
                   isNegativeProfit ? 'text-red-700' : 'text-green-700'
                 }`}>
                   {formatCurrency(calculation.profit.net)}

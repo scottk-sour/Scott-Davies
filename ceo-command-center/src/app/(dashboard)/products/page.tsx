@@ -130,12 +130,12 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight">Products</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Products</h1>
+          <p className="text-muted-foreground mt-1 md:mt-2 text-sm md:text-base">
             Manage your Etsy inventory and track stock levels
           </p>
         </div>
@@ -143,7 +143,7 @@ export default function ProductsPage() {
           onClick={handleSync}
           disabled={syncing}
           size="lg"
-          className="shadow-md hover:shadow-lg transition-all"
+          className="shadow-md hover:shadow-lg transition-all w-full sm:w-auto"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
           {syncing ? 'Syncing...' : 'Sync from Etsy'}
@@ -151,55 +151,55 @@ export default function ProductsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <Card className="border-none shadow-md hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-              <Package className="h-5 w-5 text-blue-600" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Products</CardTitle>
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <Package className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{stats.total}</div>
+            <div className="text-2xl sm:text-3xl font-bold">{stats.total}</div>
             <p className="text-xs text-muted-foreground mt-1">In your shop</p>
           </CardContent>
         </Card>
 
         <Card className="border-none shadow-md hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
-            <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
-              <AlertCircle className="h-5 w-5 text-yellow-600" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Low Stock</CardTitle>
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+              <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-yellow-600">{stats.lowStock}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-yellow-600">{stats.lowStock}</div>
             <p className="text-xs text-muted-foreground mt-1">Need attention</p>
           </CardContent>
         </Card>
 
         <Card className="border-none shadow-md hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
-            <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-              <AlertCircle className="h-5 w-5 text-red-600" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Out of Stock</CardTitle>
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-red-100 flex items-center justify-center">
+              <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-red-600">{stats.outOfStock}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-red-600">{stats.outOfStock}</div>
             <p className="text-xs text-muted-foreground mt-1">Out of inventory</p>
           </CardContent>
         </Card>
 
         <Card className="border-none shadow-md hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Value</CardTitle>
-            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-              <DollarSign className="h-5 w-5 text-green-600" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Value</CardTitle>
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-green-100 flex items-center justify-center">
+              <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-2xl sm:text-3xl font-bold">
               ${stats.totalValue.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Inventory value</p>
@@ -210,9 +210,9 @@ export default function ProductsPage() {
       {/* Filters */}
       <Card className="border-none shadow-md">
         <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col gap-4">
             {/* Search */}
-            <div className="flex-1 relative">
+            <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search products..."
@@ -223,7 +223,7 @@ export default function ProductsPage() {
             </div>
 
             {/* Stock filters */}
-            <div className="flex gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 variant={filter === 'all' ? 'default' : 'outline'}
                 onClick={() => setFilter('all')}
@@ -234,16 +234,18 @@ export default function ProductsPage() {
               <Button
                 variant={filter === 'low' ? 'default' : 'outline'}
                 onClick={() => setFilter('low')}
-                className="h-11"
+                className="h-11 text-xs sm:text-sm"
               >
-                Low Stock
+                <span className="hidden sm:inline">Low Stock</span>
+                <span className="sm:hidden">Low</span>
               </Button>
               <Button
                 variant={filter === 'out' ? 'default' : 'outline'}
                 onClick={() => setFilter('out')}
-                className="h-11"
+                className="h-11 text-xs sm:text-sm"
               >
-                Out of Stock
+                <span className="hidden sm:inline">Out of Stock</span>
+                <span className="sm:hidden">Out</span>
               </Button>
             </div>
           </div>
