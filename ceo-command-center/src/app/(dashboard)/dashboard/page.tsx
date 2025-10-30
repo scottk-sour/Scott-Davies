@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Package, AlertCircle, ShoppingCart, DollarSign, TrendingUp, ArrowRight } from 'lucide-react'
 import { OnboardingProvider } from '@/components/onboarding/OnboardingProvider'
+import { LoadDemoButton } from '@/components/dashboard/LoadDemoButton'
 import Link from 'next/link'
 
 async function getDashboardStats(userId: string) {
@@ -165,6 +166,11 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Demo Mode Card - Show if no products */}
+      {stats.totalProducts === 0 && (
+        <LoadDemoButton />
+      )}
 
       {/* Quick Actions */}
       <Card className="border-none shadow-md">
