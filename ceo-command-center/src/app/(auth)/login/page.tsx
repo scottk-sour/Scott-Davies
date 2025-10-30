@@ -42,23 +42,24 @@ export default function LoginPage() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Welcome back</CardTitle>
-        <CardDescription>
+    <Card className="border-none shadow-2xl">
+      <CardHeader className="space-y-1 pb-6">
+        <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight">Welcome back</CardTitle>
+        <CardDescription className="text-base">
           Sign in to your Etsy Organiser account
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
           {error && (
-            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
-              {error}
+            <div className="p-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3">
+              <span className="text-destructive font-medium">⚠</span>
+              <span>{error}</span>
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-sm font-semibold">Email</Label>
             <Input
               id="email"
               type="email"
@@ -67,11 +68,12 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
+              className="h-11 border-2 focus:border-primary transition-colors"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
             <Input
               id="password"
               type="password"
@@ -80,13 +82,14 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={isLoading}
+              className="h-11 border-2 focus:border-primary transition-colors"
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
+        <CardFooter className="flex flex-col gap-5 pt-6">
           <Button
             type="submit"
-            className="w-full"
+            className="w-full h-11 text-base font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all"
             disabled={isLoading}
           >
             {isLoading ? 'Signing in...' : 'Sign in'}
@@ -94,7 +97,7 @@ export default function LoginPage() {
 
           <div className="text-sm text-center text-muted-foreground">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-primary hover:underline">
+            <Link href="/signup" className="text-primary hover:underline font-semibold">
               Sign up
             </Link>
           </div>
