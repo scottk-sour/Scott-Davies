@@ -3,11 +3,13 @@ import { prisma } from '@/lib/db';
 import { Resend } from 'resend';
 import StockAlertEmail from '@/emails/StockAlert';
 
-if (!process.env.RESEND_API_KEY) {
-  console.warn('RESEND_API_KEY is not set. Email functionality will not work.')
+// Lazy initialize Resend to avoid build-time errors
+function getResendClient() {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY is not configured');
+  }
+  return new Resend(process.env.RESEND_API_KEY);
 }
-
-const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_build_key_00000000000000000000');
 
 /**
  * POST /api/stock-alerts/send
@@ -88,6 +90,7 @@ export async function POST(request: Request) {
           mainImageUrl: alert.product.mainImageUrl,
         }));
 
+        const resend = getResendClient();
         await resend.emails.send({
           from: process.env.EMAIL_FROM || 'Etsy Organiser <notifications@etsyorganizer.com>',
           to: user.email,
