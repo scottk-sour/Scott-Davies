@@ -3,7 +3,11 @@ import { prisma } from '@/lib/db';
 import { Resend } from 'resend';
 import StockAlertEmail from '@/emails/StockAlert';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+if (!process.env.RESEND_API_KEY) {
+  console.warn('RESEND_API_KEY is not set. Email functionality will not work.')
+}
+
+const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key-for-build');
 
 /**
  * POST /api/stock-alerts/send
