@@ -1,0 +1,439 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// USER MODEL
+// ==========================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String    // hashed with bcrypt
+  emailVerified DateTime?
+  image         String?
+
+  // Subscription
+  stripeCustomerId       String?            @unique
+  stripeSubscriptionId   String?            @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+  subscriptionStatus     SubscriptionStatus @default(FREE)
+
+  // Preferences
+  weekStartsOn Int     @default(1) // 1 = Monday
+  dailyGoal    String?
+  theme        String  @default("light")
+  onboardingCompleted Boolean @default(false)
+
+  // Email preferences
+  emailDigestEnabled Boolean @default(true)
+  emailDigestTime    String  @default("08:00") // HH:mm format
+  emailDigestTimezone String @default("America/New_York")
+
+  // Relations
+  tasks         Task[]
+  projects      Project[]
+  goals         Goal[]
+  habits        Habit[]
+  habitLogs     HabitLog[]
+  energyLogs    EnergyLog[]
+  weeklyReviews WeeklyReview[]
+  meetings      Meeting[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum SubscriptionStatus {
+  FREE
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+// ==========================================
+// TASK MODEL
+// ==========================================
+
+model Task {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      TaskStatus  @default(TODO)
+  priority    Priority    @default(P2_MEDIUM)
+
+  // Categorization
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
+  context   Context?
+  energy    EnergyLevel?
+
+  // Timing
+  dueDate       DateTime?
+  estimatedMins Int?
+  completedAt   DateTime?
+
+  // Metadata
+  position Int      @default(0)
+  tags     String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, dueDate])
+  @@index([projectId])
+  @@map("tasks")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  WAITING
+  DONE
+  CANCELED
+}
+
+enum Priority {
+  P0_CRITICAL
+  P1_HIGH
+  P2_MEDIUM
+  P3_LOW
+}
+
+enum Context {
+  DEEP_WORK
+  CALLS
+  EMAIL
+  ADMIN
+  CREATIVE
+  PHYSICAL
+}
+
+enum EnergyLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+// ==========================================
+// PROJECT MODEL
+// ==========================================
+
+model Project {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  category    ProjectCategory
+  priority    Priority      @default(P2_MEDIUM)
+
+  // Timeline
+  startDate     DateTime?
+  targetEndDate DateTime?
+  completedAt   DateTime?
+
+  // Progress
+  tasks  Task[]
+  goalId String?
+  goal   Goal?   @relation(fields: [goalId], references: [id])
+
+  // Metadata
+  color    String    @default("#3B82F6")
+  icon     String?
+  position Int       @default(0)
+  meetings Meeting[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([goalId])
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETE
+  CANCELED
+}
+
+enum ProjectCategory {
+  BUSINESS
+  PERSONAL
+  LEARNING
+  HEALTH
+  CREATIVE
+  OTHER
+}
+
+// ==========================================
+// GOAL MODEL
+// ==========================================
+
+model Goal {
+  id          String          @id @default(cuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  category    ProjectCategory
+  timeframe   GoalTimeframe
+  status      GoalStatus      @default(ON_TRACK)
+  progress    Int             @default(0) // 0-100
+
+  // Key Results (stored as JSON)
+  keyResults Json? // [{id, description, target, current, unit}]
+
+  // Timeline
+  targetDate DateTime?
+  achievedAt DateTime?
+
+  // Relations
+  projects Project[]
+
+  // Metadata
+  whyItMatters String?
+  position     Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, timeframe])
+  @@index([userId, status])
+  @@map("goals")
+}
+
+enum GoalTimeframe {
+  THIS_QUARTER
+  THIS_YEAR
+  THREE_YEAR
+  FIVE_YEAR
+}
+
+enum GoalStatus {
+  ON_TRACK
+  AT_RISK
+  BEHIND
+  ACHIEVED
+  ABANDONED
+}
+
+// ==========================================
+// HABIT MODEL
+// ==========================================
+
+model Habit {
+  id          String         @id @default(cuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  category    HabitCategory
+  frequency   HabitFrequency @default(DAILY)
+  timeOfDay   TimeOfDay?
+
+  // Tracking
+  logs          HabitLog[]
+  currentStreak Int        @default(0)
+  bestStreak    Int        @default(0)
+
+  // Metadata
+  whyImportant String?
+  position     Int     @default(0)
+  active       Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, active])
+  @@map("habits")
+}
+
+model HabitLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  completed Boolean  @default(true)
+  notes     String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([habitId, date])
+  @@index([userId, date])
+  @@map("habit_logs")
+}
+
+enum HabitCategory {
+  MORNING
+  EVENING
+  HEALTH
+  PRODUCTIVITY
+  MINDFULNESS
+  LEARNING
+  SOCIAL
+}
+
+enum HabitFrequency {
+  DAILY
+  WEEKDAYS
+  WEEKLY
+  MONTHLY
+}
+
+enum TimeOfDay {
+  MORNING
+  AFTERNOON
+  EVENING
+  ANYTIME
+}
+
+// ==========================================
+// ENERGY LOG MODEL
+// ==========================================
+
+model EnergyLog {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime     @db.Date
+  timeBlock    TimeBlock
+  energyLevel  Int // 1-10
+  focusQuality FocusQuality
+  mood         Mood
+  activity     String?
+  notes        String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date, timeBlock])
+  @@index([userId, date])
+  @@map("energy_logs")
+}
+
+enum TimeBlock {
+  BLOCK_06_08
+  BLOCK_08_10
+  BLOCK_10_12
+  BLOCK_12_14
+  BLOCK_14_16
+  BLOCK_16_18
+  BLOCK_18_20
+}
+
+enum FocusQuality {
+  DEEP
+  SCATTERED
+  DISTRACTED
+}
+
+enum Mood {
+  ENERGIZED
+  NEUTRAL
+  DRAINED
+}
+
+// ==========================================
+// WEEKLY REVIEW MODEL
+// ==========================================
+
+model WeeklyReview {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStartDate DateTime @db.Date
+  weekEndDate   DateTime @db.Date
+
+  // Reflection
+  wentWell    String?
+  didntGoWell String?
+  learned     String?
+  highlights  String?
+  lowlights   String?
+
+  // Metrics
+  averageEnergy  Int? // 1-10
+  tasksCompleted Int  @default(0)
+  habitsCompleted Int  @default(0)
+
+  // Planning
+  nextWeekPriorities String?
+  nextWeekFocus      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, weekStartDate])
+  @@index([userId, weekStartDate])
+  @@map("weekly_reviews")
+}
+
+// ==========================================
+// MEETING MODEL
+// ==========================================
+
+model Meeting {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  date      DateTime
+  attendees String[]
+  type      MeetingType
+  projectId String?
+  project   Project?      @relation(fields: [projectId], references: [id])
+
+  // Content
+  agenda      String?
+  notes       String?
+  decisions   String?
+  actionItems String[] // Task IDs created from meeting
+
+  // Status
+  status       MeetingStatus @default(SCHEDULED)
+  followUpDate DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, date])
+  @@index([projectId])
+  @@map("meetings")
+}
+
+enum MeetingType {
+  ONE_ON_ONE
+  TEAM
+  CLIENT
+  INTERVIEW
+  PLANNING
+  REVIEW
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELED
+}

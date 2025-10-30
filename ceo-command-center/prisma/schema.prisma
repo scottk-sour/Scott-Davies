@@ -1,5 +1,7 @@
-// This is your Prisma schema file
-// Learn more: https://pris.ly/d/prisma-schema
+// ==========================================
+// ETSY ORGANIZER SCHEMA
+// Pivoted from CEO Command Center
+// ==========================================
 
 generator client {
   provider = "prisma-client-js"
@@ -11,7 +13,7 @@ datasource db {
 }
 
 // ==========================================
-// USER MODEL
+// USER MODEL (Simplified for Etsy focus)
 // ==========================================
 
 model User {
@@ -30,8 +32,6 @@ model User {
   subscriptionStatus     SubscriptionStatus @default(FREE)
 
   // Preferences
-  weekStartsOn Int     @default(1) // 1 = Monday
-  dailyGoal    String?
   theme        String  @default("light")
   onboardingCompleted Boolean @default(false)
 
@@ -41,14 +41,8 @@ model User {
   emailDigestTimezone String @default("America/New_York")
 
   // Relations
-  tasks         Task[]
-  projects      Project[]
-  goals         Goal[]
-  habits        Habit[]
-  habitLogs     HabitLog[]
-  energyLogs    EnergyLog[]
-  weeklyReviews WeeklyReview[]
-  meetings      Meeting[]
+  etsyShops    EtsyShop[]
+  stockAlerts  StockAlert[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,375 +59,229 @@ enum SubscriptionStatus {
 }
 
 // ==========================================
-// TASK MODEL
+// ETSY SHOP MODEL
 // ==========================================
 
-model Task {
-  id          String      @id @default(cuid())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  status      TaskStatus  @default(TODO)
-  priority    Priority    @default(P2_MEDIUM)
+model EtsyShop {
+  id       String  @id @default(cuid())
+  userId   String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Categorization
-  projectId String?
-  project   Project? @relation(fields: [projectId], references: [id])
-  context   Context?
-  energy    EnergyLevel?
+  // Etsy API data
+  etsyShopId    String  @unique // Etsy's shop_id
+  shopName      String
+  shopUrl       String?
+  currency      String  @default("USD")
 
-  // Timing
-  dueDate       DateTime?
-  estimatedMins Int?
-  completedAt   DateTime?
+  // OAuth tokens (encrypted in production!)
+  accessToken   String  // Store encrypted
+  refreshToken  String? // Store encrypted
+  tokenExpiry   DateTime?
 
-  // Metadata
-  position Int      @default(0)
-  tags     String[]
+  // Sync status
+  lastSyncedAt  DateTime?
+  syncEnabled   Boolean @default(true)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId, status])
-  @@index([userId, dueDate])
-  @@index([projectId])
-  @@map("tasks")
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  WAITING
-  DONE
-  CANCELED
-}
-
-enum Priority {
-  P0_CRITICAL
-  P1_HIGH
-  P2_MEDIUM
-  P3_LOW
-}
-
-enum Context {
-  DEEP_WORK
-  CALLS
-  EMAIL
-  ADMIN
-  CREATIVE
-  PHYSICAL
-}
-
-enum EnergyLevel {
-  HIGH
-  MEDIUM
-  LOW
-}
-
-// ==========================================
-// PROJECT MODEL
-// ==========================================
-
-model Project {
-  id          String        @id @default(cuid())
-  userId      String
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  status      ProjectStatus @default(ACTIVE)
-  category    ProjectCategory
-  priority    Priority      @default(P2_MEDIUM)
-
-  // Timeline
-  startDate     DateTime?
-  targetEndDate DateTime?
-  completedAt   DateTime?
-
-  // Progress
-  tasks  Task[]
-  goalId String?
-  goal   Goal?   @relation(fields: [goalId], references: [id])
-
-  // Metadata
-  color    String    @default("#3B82F6")
-  icon     String?
-  position Int       @default(0)
-  meetings Meeting[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId, status])
-  @@index([goalId])
-  @@map("projects")
-}
-
-enum ProjectStatus {
-  PLANNING
-  ACTIVE
-  ON_HOLD
-  COMPLETE
-  CANCELED
-}
-
-enum ProjectCategory {
-  BUSINESS
-  PERSONAL
-  LEARNING
-  HEALTH
-  CREATIVE
-  OTHER
-}
-
-// ==========================================
-// GOAL MODEL
-// ==========================================
-
-model Goal {
-  id          String          @id @default(cuid())
-  userId      String
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  category    ProjectCategory
-  timeframe   GoalTimeframe
-  status      GoalStatus      @default(ON_TRACK)
-  progress    Int             @default(0) // 0-100
-
-  // Key Results (stored as JSON)
-  keyResults Json? // [{id, description, target, current, unit}]
-
-  // Timeline
-  targetDate DateTime?
-  achievedAt DateTime?
+  // Shop settings
+  defaultStockThreshold Int @default(5) // Alert when stock below this
 
   // Relations
-  projects Project[]
-
-  // Metadata
-  whyItMatters String?
-  position     Int     @default(0)
+  products Product[]
+  orders   Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId, timeframe])
-  @@index([userId, status])
-  @@map("goals")
-}
-
-enum GoalTimeframe {
-  THIS_QUARTER
-  THIS_YEAR
-  THREE_YEAR
-  FIVE_YEAR
-}
-
-enum GoalStatus {
-  ON_TRACK
-  AT_RISK
-  BEHIND
-  ACHIEVED
-  ABANDONED
+  @@index([userId])
+  @@index([etsyShopId])
+  @@map("etsy_shops")
 }
 
 // ==========================================
-// HABIT MODEL
+// PRODUCT MODEL (Etsy Listings)
 // ==========================================
 
-model Habit {
-  id          String         @id @default(cuid())
-  userId      String
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  category    HabitCategory
-  frequency   HabitFrequency @default(DAILY)
-  timeOfDay   TimeOfDay?
+model Product {
+  id       String   @id @default(cuid())
+  shopId   String
+  shop     EtsyShop @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
-  // Tracking
-  logs          HabitLog[]
-  currentStreak Int        @default(0)
-  bestStreak    Int        @default(0)
+  // Etsy listing data
+  etsyListingId String  @unique // Etsy's listing_id
+  title         String
+  description   String?
+  sku           String?
 
-  // Metadata
-  whyImportant String?
-  position     Int     @default(0)
-  active       Boolean @default(true)
+  // Inventory
+  quantity         Int     @default(0)
+  stockThreshold   Int?    // Override shop default if needed
+
+  // Pricing
+  price            Decimal @db.Decimal(10, 2)
+  currency         String  @default("USD")
+
+  // Cost tracking (for profit calculation)
+  costPerUnit      Decimal? @db.Decimal(10, 2)
+
+  // Status
+  state            ProductState @default(ACTIVE)
+
+  // Images
+  mainImageUrl     String?
+
+  // Etsy specific
+  views            Int     @default(0)
+  favorites        Int     @default(0)
+
+  // Relations
+  orderItems       OrderItem[]
+  stockAlerts      StockAlert[]
+
+  // Sync
+  lastSyncedAt     DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId, active])
-  @@map("habits")
+  @@index([shopId])
+  @@index([etsyListingId])
+  @@index([shopId, state])
+  @@map("products")
 }
 
-model HabitLog {
+enum ProductState {
+  ACTIVE    // Live on Etsy
+  INACTIVE  // Deactivated
+  DRAFT     // Not yet published
+  SOLD_OUT  // No stock
+}
+
+// ==========================================
+// ORDER MODEL (Etsy Orders)
+// ==========================================
+
+model Order {
+  id       String   @id @default(cuid())
+  shopId   String
+  shop     EtsyShop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  // Etsy order data
+  etsyOrderId      String   @unique // Etsy's receipt_id
+  orderNumber      String   // Human-readable order number
+
+  // Customer info
+  buyerEmail       String?
+  buyerName        String?
+
+  // Amounts
+  subtotal         Decimal  @db.Decimal(10, 2)
+  shippingCost     Decimal  @db.Decimal(10, 2) @default(0)
+  taxAmount        Decimal  @db.Decimal(10, 2) @default(0)
+  total            Decimal  @db.Decimal(10, 2)
+
+  // Etsy fees (for profit calculation)
+  etsyFees         Decimal? @db.Decimal(10, 2)
+
+  // Status
+  status           OrderStatus @default(PENDING)
+
+  // Fulfillment
+  shippedAt        DateTime?
+  deliveredAt      DateTime?
+  trackingNumber   String?
+  shippingCarrier  String?
+
+  // Timestamps from Etsy
+  orderDate        DateTime
+
+  // Relations
+  items            OrderItem[]
+
+  // Sync
+  lastSyncedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shopId])
+  @@index([etsyOrderId])
+  @@index([shopId, status])
+  @@index([shopId, orderDate])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING       // Payment received, not shipped
+  PROCESSING    // Being prepared
+  SHIPPED       // In transit
+  DELIVERED     // Confirmed delivery
+  CANCELED      // Canceled by buyer or seller
+  REFUNDED      // Refunded
+}
+
+// ==========================================
+// ORDER ITEM MODEL (Line items in orders)
+// ==========================================
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  // Item details (snapshot at time of order)
+  etsyTransactionId String  @unique // Etsy's transaction_id
+  productTitle      String
+  quantity          Int
+  pricePerUnit      Decimal @db.Decimal(10, 2)
+  totalPrice        Decimal @db.Decimal(10, 2)
+
+  // For profit calculation
+  costPerUnit       Decimal? @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+// ==========================================
+// STOCK ALERT MODEL
+// ==========================================
+
+model StockAlert {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habitId   String
-  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
-  date      DateTime @db.Date
-  completed Boolean  @default(true)
-  notes     String?
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-
-  @@unique([habitId, date])
-  @@index([userId, date])
-  @@map("habit_logs")
-}
-
-enum HabitCategory {
-  MORNING
-  EVENING
-  HEALTH
-  PRODUCTIVITY
-  MINDFULNESS
-  LEARNING
-  SOCIAL
-}
-
-enum HabitFrequency {
-  DAILY
-  WEEKDAYS
-  WEEKLY
-  MONTHLY
-}
-
-enum TimeOfDay {
-  MORNING
-  AFTERNOON
-  EVENING
-  ANYTIME
-}
-
-// ==========================================
-// ENERGY LOG MODEL
-// ==========================================
-
-model EnergyLog {
-  id           String       @id @default(cuid())
-  userId       String
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date         DateTime     @db.Date
-  timeBlock    TimeBlock
-  energyLevel  Int // 1-10
-  focusQuality FocusQuality
-  mood         Mood
-  activity     String?
-  notes        String?
-
-  createdAt DateTime @default(now())
-
-  @@unique([userId, date, timeBlock])
-  @@index([userId, date])
-  @@map("energy_logs")
-}
-
-enum TimeBlock {
-  BLOCK_06_08
-  BLOCK_08_10
-  BLOCK_10_12
-  BLOCK_12_14
-  BLOCK_14_16
-  BLOCK_16_18
-  BLOCK_18_20
-}
-
-enum FocusQuality {
-  DEEP
-  SCATTERED
-  DISTRACTED
-}
-
-enum Mood {
-  ENERGIZED
-  NEUTRAL
-  DRAINED
-}
-
-// ==========================================
-// WEEKLY REVIEW MODEL
-// ==========================================
-
-model WeeklyReview {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  weekStartDate DateTime @db.Date
-  weekEndDate   DateTime @db.Date
-
-  // Reflection
-  wentWell    String?
-  didntGoWell String?
-  learned     String?
-  highlights  String?
-  lowlights   String?
-
-  // Metrics
-  averageEnergy  Int? // 1-10
-  tasksCompleted Int  @default(0)
-  habitsCompleted Int  @default(0)
-
-  // Planning
-  nextWeekPriorities String?
-  nextWeekFocus      String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, weekStartDate])
-  @@index([userId, weekStartDate])
-  @@map("weekly_reviews")
-}
-
-// ==========================================
-// MEETING MODEL
-// ==========================================
-
-model Meeting {
-  id        String        @id @default(cuid())
-  userId    String
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title     String
-  date      DateTime
-  attendees String[]
-  type      MeetingType
-  projectId String?
-  project   Project?      @relation(fields: [projectId], references: [id])
-
-  // Content
-  agenda      String?
-  notes       String?
-  decisions   String?
-  actionItems String[] // Task IDs created from meeting
+  // Alert details
+  alertType      AlertType
+  threshold      Int       // Stock level that triggered alert
+  currentStock   Int       // Stock at time of alert
 
   // Status
-  status       MeetingStatus @default(SCHEDULED)
-  followUpDate DateTime?
+  acknowledged   Boolean   @default(false)
+  acknowledgedAt DateTime?
+  resolved       Boolean   @default(false)
+  resolvedAt     DateTime?
+
+  // Email tracking
+  emailSent      Boolean   @default(false)
+  emailSentAt    DateTime?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  @@index([userId, date])
-  @@index([projectId])
-  @@map("meetings")
+  @@index([userId, acknowledged])
+  @@index([productId])
+  @@map("stock_alerts")
 }
 
-enum MeetingType {
-  ONE_ON_ONE
-  TEAM
-  CLIENT
-  INTERVIEW
-  PLANNING
-  REVIEW
-}
-
-enum MeetingStatus {
-  SCHEDULED
-  COMPLETED
-  CANCELED
+enum AlertType {
+  LOW_STOCK     // Stock below threshold
+  OUT_OF_STOCK  // Stock = 0
+  BACK_IN_STOCK // Stock replenished
 }
