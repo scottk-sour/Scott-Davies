@@ -138,7 +138,7 @@ export function ProfitCalculator() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">
-                  Payment Processing (3% + $0.25)
+                  Payment Processing (3% + £0.25)
                 </span>
                 <span className="font-medium">-{formatCurrency(calculation.costs.etsyFees.paymentProcessingFee)}</span>
               </div>
@@ -230,7 +230,7 @@ export function ProfitCalculator() {
         <div className="pt-6 border-t">
           <div className="p-4 bg-blue-50 rounded-lg">
             <p className="text-xs text-blue-900">
-              <strong>Etsy Fees (2024):</strong> $0.20 listing fee + 6.5% transaction fee + 3% + $0.25 payment processing.
+              <strong>Etsy Fees (2024):</strong> £0.20 listing fee + 6.5% transaction fee + 3% + £0.25 payment processing.
               Fees are calculated on item price plus shipping cost.
             </p>
           </div>

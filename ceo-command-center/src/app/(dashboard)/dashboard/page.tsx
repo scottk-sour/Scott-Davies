@@ -157,7 +157,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl sm:text-3xl font-bold">
-              ${stats.monthlyRevenue.toFixed(2)}
+              £{stats.monthlyRevenue.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               This month

@@ -200,7 +200,7 @@ export default function ProductsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl sm:text-3xl font-bold">
-              ${stats.totalValue.toFixed(2)}
+              £{stats.totalValue.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Inventory value</p>
           </CardContent>
@@ -361,7 +361,7 @@ function ProductCard({
             <div className="flex justify-between items-center py-2 border-b">
               <span className="text-muted-foreground">Price</span>
               <span className="font-semibold text-lg">
-                ${product.price.toFixed(2)}
+                £{product.price.toFixed(2)}
               </span>
             </div>
 
@@ -392,7 +392,7 @@ function ProductCard({
                   className="font-medium hover:text-primary transition-colors"
                 >
                   {product.costPerUnit
-                    ? `$${product.costPerUnit.toFixed(2)}`
+                    ? `£${product.costPerUnit.toFixed(2)}`
                     : '+ Add cost'}
                 </button>
               )}
@@ -406,7 +406,7 @@ function ProductCard({
                     profit > 0 ? 'text-green-600' : 'text-red-600'
                   }`}
                 >
-                  ${profit.toFixed(2)}
+                  £{profit.toFixed(2)}
                 </span>
               </div>
             )}

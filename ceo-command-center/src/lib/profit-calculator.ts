@@ -29,23 +29,23 @@ export type ProfitCalculation = {
  * Calculate Etsy fees for a sale
  *
  * Etsy Fees (as of 2024):
- * - Listing Fee: $0.20 per listing (paid when listing)
+ * - Listing Fee: £0.20 per listing (paid when listing)
  * - Transaction Fee: 6.5% of sale price (including shipping)
- * - Payment Processing Fee: 3% + $0.25 per order
+ * - Payment Processing Fee: 3% + £0.25 per order
  */
 export function calculateEtsyFees(
   itemPrice: number,
   shippingCost: number = 0,
   quantity: number = 1
 ): EtsyFees {
-  // Listing fee ($0.20 per listing, only paid once regardless of quantity)
+  // Listing fee (£0.20 per listing, only paid once regardless of quantity)
   const listingFee = 0.20;
 
   // Transaction fee (6.5% of item price + shipping)
   const saleAmount = (itemPrice * quantity) + shippingCost;
   const transactionFee = saleAmount * 0.065;
 
-  // Payment processing fee (3% + $0.25)
+  // Payment processing fee (3% + £0.25)
   const paymentProcessingFee = (saleAmount * 0.03) + 0.25;
 
   return {
@@ -140,8 +140,8 @@ export function calculateOrderProfit(
 /**
  * Format currency value
  */
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
+export function formatCurrency(amount: number, currency: string = 'GBP'): string {
+  return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency,
   }).format(amount);

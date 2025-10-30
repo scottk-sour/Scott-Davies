@@ -190,7 +190,7 @@ export default function OrdersPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold">${stats.revenue.toFixed(2)}</div>
+            <div className="text-2xl sm:text-3xl font-bold">£{stats.revenue.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground mt-1">Total sales</p>
           </CardContent>
         </Card>
@@ -203,7 +203,7 @@ export default function OrdersPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold">${stats.avgOrderValue.toFixed(2)}</div>
+            <div className="text-2xl sm:text-3xl font-bold">£{stats.avgOrderValue.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground mt-1">Per order</p>
           </CardContent>
         </Card>
@@ -341,10 +341,10 @@ function OrderCard({ order, onClick }: { order: Order; onClick: () => void }) {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold text-gray-900">${order.total.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-gray-900">£{order.total.toFixed(2)}</p>
             {profit > 0 && (
               <Badge variant="outline" className="mt-1 bg-green-50 text-green-700 border-green-200">
-                +${profit.toFixed(2)} profit
+                +£{profit.toFixed(2)} profit
               </Badge>
             )}
           </div>
@@ -357,15 +357,15 @@ function OrderCard({ order, onClick }: { order: Order; onClick: () => void }) {
           </div>
           <div>
             <p className="text-muted-foreground text-xs mb-1">Subtotal</p>
-            <p className="font-semibold">${order.subtotal.toFixed(2)}</p>
+            <p className="font-semibold">£{order.subtotal.toFixed(2)}</p>
           </div>
           <div>
             <p className="text-muted-foreground text-xs mb-1">Shipping</p>
-            <p className="font-semibold">${order.shippingCost.toFixed(2)}</p>
+            <p className="font-semibold">£{order.shippingCost.toFixed(2)}</p>
           </div>
           <div>
             <p className="text-muted-foreground text-xs mb-1">Tax</p>
-            <p className="font-semibold">${order.taxAmount.toFixed(2)}</p>
+            <p className="font-semibold">£{order.taxAmount.toFixed(2)}</p>
           </div>
         </div>
 
@@ -463,19 +463,19 @@ function OrderDetailsModal({
                         <div className="flex-1">
                           <p className="font-semibold">{item.productTitle}</p>
                           <p className="text-sm text-muted-foreground mt-1">
-                            Quantity: {item.quantity} × ${item.pricePerUnit.toFixed(2)}
+                            Quantity: {item.quantity} × £{item.pricePerUnit.toFixed(2)}
                           </p>
                           {item.costPerUnit && (
                             <p className="text-xs text-muted-foreground">
-                              Cost: ${item.costPerUnit.toFixed(2)} each
+                              Cost: £{item.costPerUnit.toFixed(2)} each
                             </p>
                           )}
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-lg">${item.totalPrice.toFixed(2)}</p>
+                          <p className="font-bold text-lg">£{item.totalPrice.toFixed(2)}</p>
                           {itemProfit !== null && (
                             <Badge variant="outline" className="mt-1 bg-green-50 text-green-700 border-green-200">
-                              +${itemProfit.toFixed(2)}
+                              +£{itemProfit.toFixed(2)}
                             </Badge>
                           )}
                         </div>
@@ -496,30 +496,30 @@ function OrderDetailsModal({
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
-                  <span className="font-medium">${order.subtotal.toFixed(2)}</span>
+                  <span className="font-medium">£{order.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping:</span>
-                  <span className="font-medium">${order.shippingCost.toFixed(2)}</span>
+                  <span className="font-medium">£{order.shippingCost.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Tax:</span>
-                  <span className="font-medium">${order.taxAmount.toFixed(2)}</span>
+                  <span className="font-medium">£{order.taxAmount.toFixed(2)}</span>
                 </div>
                 {order.etsyFees && (
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>Etsy Fees:</span>
-                    <span>-${order.etsyFees.toFixed(2)}</span>
+                    <span>-£{order.etsyFees.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-xl pt-3 border-t-2">
                   <span>Total:</span>
-                  <span>${order.total.toFixed(2)}</span>
+                  <span>£{order.total.toFixed(2)}</span>
                 </div>
                 {totalProfit > 0 && (
                   <div className="flex justify-between font-bold text-lg text-green-600 bg-green-50 p-3 rounded-lg">
                     <span>Estimated Profit:</span>
-                    <span>+${totalProfit.toFixed(2)}</span>
+                    <span>+£{totalProfit.toFixed(2)}</span>
                   </div>
                 )}
               </div>
