@@ -5,29 +5,21 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
-  CheckSquare,
-  FolderKanban,
-  Target,
-  Calendar,
-  Zap,
-  ClipboardList,
-  MessageSquare,
+  Package,
+  ShoppingCart,
+  TrendingUp,
   Settings,
   LogOut,
-  Package,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { signOut } from 'next-auth/react'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Tasks', href: '/tasks', icon: CheckSquare },
-  { name: 'Projects', href: '/projects', icon: FolderKanban },
-  { name: 'Goals', href: '/goals', icon: Target },
-  { name: 'Habits', href: '/habits', icon: Calendar },
-  { name: 'Energy', href: '/energy', icon: Zap },
-  { name: 'Weekly Review', href: '/review', icon: ClipboardList },
-  { name: 'Meetings', href: '/meetings', icon: MessageSquare },
+  { name: 'Products', href: '/products', icon: Package },
+  { name: 'Orders', href: '/orders', icon: ShoppingCart },
+  { name: 'Analytics', href: '/analytics', icon: TrendingUp },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
 type SidebarProps = {
@@ -82,13 +74,6 @@ export function Sidebar({ user }: SidebarProps) {
           <p className="text-sm font-medium truncate">{user.name}</p>
           <p className="text-xs text-muted-foreground truncate">{user.email}</p>
         </div>
-
-        <Link href="/settings">
-          <Button variant="ghost" className="w-full justify-start gap-3">
-            <Settings className="h-5 w-5" />
-            Settings
-          </Button>
-        </Link>
 
         <Button
           variant="ghost"

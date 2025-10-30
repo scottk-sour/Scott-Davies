@@ -1,49 +1,68 @@
 import { auth } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/db'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { CheckCircle2, Target, Calendar, TrendingUp } from 'lucide-react'
+import { Package, AlertCircle, ShoppingCart, DollarSign } from 'lucide-react'
 import { OnboardingProvider } from '@/components/onboarding/OnboardingProvider'
 
 async function getDashboardStats(userId: string) {
-  const [tasksToday, tasksCompleted, activeProjects, activeHabits] = await Promise.all([
-    prisma.task.count({
+  // Get user's Etsy shop
+  const etsyShop = await prisma.etsyShop.findFirst({
+    where: { userId },
+  })
+
+  if (!etsyShop) {
+    return {
+      totalProducts: 0,
+      lowStockItems: 0,
+      pendingOrders: 0,
+      monthlyRevenue: 0,
+    }
+  }
+
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+  const [totalProducts, lowStockItems, pendingOrders, monthlyOrders] = await Promise.all([
+    prisma.product.count({
+      where: { shopId: etsyShop.id },
+    }),
+    prisma.product.count({
       where: {
-        userId,
-        status: { in: ['TODO', 'IN_PROGRESS'] },
-        dueDate: {
-          gte: new Date(new Date().setHours(0, 0, 0, 0)),
-          lte: new Date(new Date().setHours(23, 59, 59, 999)),
+        shopId: etsyShop.id,
+        quantity: {
+          lte: etsyShop.defaultStockThreshold,
         },
       },
     }),
-    prisma.task.count({
+    prisma.order.count({
       where: {
-        userId,
-        status: 'DONE',
-        completedAt: {
-          gte: new Date(new Date().setHours(0, 0, 0, 0)),
+        shopId: etsyShop.id,
+        status: 'PENDING',
+      },
+    }),
+    prisma.order.findMany({
+      where: {
+        shopId: etsyShop.id,
+        orderDate: {
+          gte: startOfMonth,
         },
       },
-    }),
-    prisma.project.count({
-      where: {
-        userId,
-        status: 'ACTIVE',
-      },
-    }),
-    prisma.habit.count({
-      where: {
-        userId,
-        active: true,
+      select: {
+        total: true,
       },
     }),
   ])
 
+  const monthlyRevenue = monthlyOrders.reduce(
+    (sum, order) => sum + Number(order.total),
+    0
+  )
+
   return {
-    tasksToday,
-    tasksCompleted,
-    activeProjects,
-    activeHabits,
+    totalProducts,
+    lowStockItems,
+    pendingOrders,
+    monthlyRevenue,
   }
 }
 
@@ -66,7 +85,7 @@ export default async function DashboardPage() {
           Welcome back, {session.user.name?.split(' ')[0] || 'there'}!
         </h1>
         <p className="text-muted-foreground mt-2">
-          Here's what's happening today
+          Here's your Etsy shop overview
         </p>
       </div>
 
@@ -75,14 +94,14 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Tasks Today
+              Total Products
             </CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+            <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.tasksToday}</div>
+            <div className="text-2xl font-bold">{stats.totalProducts}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.tasksCompleted} completed
+              In your shop
             </p>
           </CardContent>
         </Card>
@@ -90,14 +109,16 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Active Projects
+              Low Stock
             </CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <AlertCircle className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.activeProjects}</div>
+            <div className="text-2xl font-bold text-yellow-600">
+              {stats.lowStockItems}
+            </div>
             <p className="text-xs text-muted-foreground">
-              In progress
+              Need attention
             </p>
           </CardContent>
         </Card>
@@ -105,14 +126,14 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Active Habits
+              Pending Orders
             </CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.activeHabits}</div>
+            <div className="text-2xl font-bold">{stats.pendingOrders}</div>
             <p className="text-xs text-muted-foreground">
-              Tracking daily
+              Ready to ship
             </p>
           </CardContent>
         </Card>
@@ -120,16 +141,16 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Week Progress
+              Monthly Revenue
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats.tasksCompleted > 0 ? '↑' : '—'}
+              ${stats.monthlyRevenue.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground">
-              Keep going!
+              This month
             </p>
           </CardContent>
         </Card>
@@ -138,43 +159,43 @@ export default async function DashboardPage() {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Start</CardTitle>
+          <CardTitle>Quick Actions</CardTitle>
           <CardDescription>
-            Jump into your most important features
+            Manage your Etsy shop
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
             <a
-              href="/tasks"
+              href="/products"
               className="flex flex-col gap-2 p-4 border rounded-lg hover:bg-accent transition-colors"
             >
-              <CheckCircle2 className="h-6 w-6 text-primary" />
-              <h3 className="font-semibold">Manage Tasks</h3>
+              <Package className="h-6 w-6 text-primary" />
+              <h3 className="font-semibold">Manage Inventory</h3>
               <p className="text-sm text-muted-foreground">
-                View and organize your to-do list
+                Track stock levels and update products
               </p>
             </a>
 
             <a
-              href="/projects"
+              href="/orders"
               className="flex flex-col gap-2 p-4 border rounded-lg hover:bg-accent transition-colors"
             >
-              <Target className="h-6 w-6 text-primary" />
-              <h3 className="font-semibold">Track Projects</h3>
+              <ShoppingCart className="h-6 w-6 text-primary" />
+              <h3 className="font-semibold">Process Orders</h3>
               <p className="text-sm text-muted-foreground">
-                Monitor progress on your initiatives
+                Fulfill orders and add tracking
               </p>
             </a>
 
             <a
-              href="/goals"
+              href="/settings"
               className="flex flex-col gap-2 p-4 border rounded-lg hover:bg-accent transition-colors"
             >
-              <TrendingUp className="h-6 w-6 text-primary" />
-              <h3 className="font-semibold">Review Goals</h3>
+              <AlertCircle className="h-6 w-6 text-primary" />
+              <h3 className="font-semibold">Etsy Connection</h3>
               <p className="text-sm text-muted-foreground">
-                Stay aligned with your objectives
+                Connect or sync your Etsy shop
               </p>
             </a>
           </div>

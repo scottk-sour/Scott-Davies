@@ -1,33 +1,42 @@
 import { auth } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/db'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { EmailPreferences } from '@/components/settings/EmailPreferences'
+import { EtsyConnection } from '@/components/settings/EtsyConnection'
 
 async function getUserSettings(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      name: true,
-      email: true,
-      subscriptionStatus: true,
-      stripeCurrentPeriodEnd: true,
-      emailDigestEnabled: true,
-      emailDigestTime: true,
-      emailDigestTimezone: true,
-    },
-  })
+  const [user, etsyShop] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        name: true,
+        email: true,
+        subscriptionStatus: true,
+        stripeCurrentPeriodEnd: true,
+      },
+    }),
+    prisma.etsyShop.findFirst({
+      where: { userId },
+      select: {
+        id: true,
+        shopName: true,
+        etsyShopId: true,
+        lastSyncedAt: true,
+        syncEnabled: true,
+      },
+    }),
+  ])
 
-  return user
+  return { user, etsyShop }
 }
 
 export default async function SettingsPage() {
   const session = await auth()
   if (!session?.user?.id) return null
 
-  const user = await getUserSettings(session.user.id)
+  const { user, etsyShop } = await getUserSettings(session.user.id)
   if (!user) return null
 
   const isPro = user.subscriptionStatus === 'ACTIVE' || user.subscriptionStatus === 'TRIALING'
@@ -37,9 +46,12 @@ export default async function SettingsPage() {
       <div>
         <h1 className="text-3xl font-bold">Settings</h1>
         <p className="text-muted-foreground mt-2">
-          Manage your account and subscription
+          Manage your Etsy connection and account
         </p>
       </div>
+
+      {/* Etsy Connection */}
+      <EtsyConnection etsyShop={etsyShop} />
 
       {/* Account Info */}
       <Card>
@@ -76,7 +88,7 @@ export default async function SettingsPage() {
           {!isPro && (
             <div>
               <p className="text-sm text-muted-foreground mb-4">
-                Upgrade to Pro to unlock unlimited tasks, projects, goals, habits, and advanced features.
+                Upgrade to Pro to unlock unlimited products, advanced analytics, and automation features.
               </p>
               <Link href="/pricing">
                 <Button>Upgrade to Pro</Button>
@@ -94,13 +106,6 @@ export default async function SettingsPage() {
           )}
         </CardContent>
       </Card>
-
-      {/* Email Preferences */}
-      <EmailPreferences
-        initialEnabled={user.emailDigestEnabled}
-        initialTime={user.emailDigestTime}
-        initialTimezone={user.emailDigestTimezone}
-      />
     </div>
   )
 }
