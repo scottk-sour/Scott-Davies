@@ -49,7 +49,7 @@ export default function LandingPage() {
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight">
               Your Etsy Shop,{" "}
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Organized
+                Organised
               </span>
             </h1>
             <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto">
@@ -104,7 +104,7 @@ export default function LandingPage() {
             <Card className="border-2 bg-gradient-to-br from-red-50 to-background">
               <CardContent className="p-5 md:p-6">
                 <p className="text-sm md:text-base text-muted-foreground italic">
-                  "I ran out of stock on my bestseller and lost $500 in sales this week..."
+                  "I ran out of stock on my bestseller and lost £500 in sales this week..."
                 </p>
               </CardContent>
             </Card>
@@ -138,9 +138,9 @@ export default function LandingPage() {
             </div>
             <div className="p-4">
               <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                $39/mo
+                £39/mo
               </div>
-              <p className="text-sm md:text-base text-muted-foreground mt-2 font-medium">vs $80-120 for separate tools</p>
+              <p className="text-sm md:text-base text-muted-foreground mt-2 font-medium">vs £80-120 for separate tools</p>
             </div>
             <div className="p-4">
               <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent">
@@ -156,7 +156,7 @@ export default function LandingPage() {
       <section className="container py-16 md:py-20 lg:py-24">
         <div className="text-center mb-10 md:mb-12">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4">How It Works</h2>
-          <p className="text-base md:text-xl text-muted-foreground">Get organized in 3 simple steps</p>
+          <p className="text-base md:text-xl text-muted-foreground">Get organised in 3 simple steps</p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
@@ -192,7 +192,7 @@ export default function LandingPage() {
               <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-pink-500 to-orange-600 text-white flex items-center justify-center text-2xl md:text-3xl font-bold mx-auto mb-4 shadow-lg">
                 3
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2">Stay Organized</h3>
+              <h3 className="text-lg md:text-xl font-semibold mb-2">Stay Organised</h3>
               <p className="text-sm md:text-base text-muted-foreground">
                 Get alerts before you run out of stock. Track orders until delivery. Focus on selling.
               </p>
@@ -307,7 +307,7 @@ export default function LandingPage() {
                 <CardDescription className="text-sm md:text-base mt-2">For trying it out</CardDescription>
               </div>
               <div>
-                <div className="text-3xl md:text-4xl font-bold">$0</div>
+                <div className="text-3xl md:text-4xl font-bold">£0</div>
                 <p className="text-sm text-muted-foreground mt-1">forever</p>
               </div>
             </CardHeader>
@@ -345,7 +345,7 @@ export default function LandingPage() {
                 <CardDescription className="text-sm md:text-base mt-2">For serious sellers</CardDescription>
               </div>
               <div>
-                <div className="text-3xl md:text-4xl font-bold">$39</div>
+                <div className="text-3xl md:text-4xl font-bold">£39</div>
                 <p className="text-sm text-muted-foreground mt-1">per month</p>
               </div>
             </CardHeader>
@@ -585,7 +585,7 @@ export default function LandingPage() {
               <CardHeader>
                 <CardTitle className="text-base md:text-lg">What happens after the 14-day trial?</CardTitle>
                 <CardDescription className="text-sm md:text-base mt-2">
-                  You can upgrade to continue using Etsy Organizer for $39/month (cancel anytime).
+                  You can upgrade to continue using Etsy Organiser for £39/month (cancel anytime).
                   Or keep using the free plan with basic inventory tracking for one shop.
                 </CardDescription>
               </CardHeader>
@@ -596,7 +596,7 @@ export default function LandingPage() {
                 <CardTitle className="text-base md:text-lg">How is this different from Etsy's built-in tools?</CardTitle>
                 <CardDescription className="text-sm md:text-base mt-2">
                   Etsy shows orders and listings separately. We bring everything together: inventory levels,
-                  order status, profit calculations, and proactive alerts—all in one dashboard optimized for sellers.
+                  order status, profit calculations, and proactive alerts—all in one dashboard optimised for sellers.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -626,7 +626,7 @@ export default function LandingPage() {
                 Limited Time Offer
               </Badge>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-                Ready to Get Organized?
+                Ready to Get Organised?
               </h2>
               <p className="text-base md:text-xl text-muted-foreground max-w-2xl">
                 Join hundreds of Etsy sellers who've stopped juggling spreadsheets and started focusing on what matters:
