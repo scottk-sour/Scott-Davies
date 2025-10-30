@@ -1,8 +1,9 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Package, AlertCircle, ShoppingCart, DollarSign } from 'lucide-react'
+import { Package, AlertCircle, ShoppingCart, DollarSign, TrendingUp, ArrowRight } from 'lucide-react'
 import { OnboardingProvider } from '@/components/onboarding/OnboardingProvider'
+import Link from 'next/link'
 
 async function getDashboardStats(userId: string) {
   // Get user's Etsy shop
@@ -80,76 +81,85 @@ export default async function DashboardPage() {
 
   const dashboardContent = (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">
-          Welcome back, {session.user.name?.split(' ')[0] || 'there'}!
+      {/* Welcome Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-8 border-none shadow-md">
+        <h1 className="text-4xl font-bold tracking-tight">
+          Welcome back, {session.user.name?.split(' ')[0] || 'there'}! 👋
         </h1>
-        <p className="text-muted-foreground mt-2">
-          Here's your Etsy shop overview
+        <p className="text-muted-foreground mt-2 text-lg">
+          Here's your Etsy shop overview for today
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="border-none shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-blue-50 to-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Products
             </CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <Package className="h-5 w-5 text-blue-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProducts}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold">{stats.totalProducts}</div>
+            <p className="text-xs text-muted-foreground mt-1">
               In your shop
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-none shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-yellow-50 to-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Low Stock
             </CardTitle>
-            <AlertCircle className="h-4 w-4 text-yellow-500" />
+            <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+              <AlertCircle className="h-5 w-5 text-yellow-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-3xl font-bold text-yellow-600">
               {stats.lowStockItems}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground mt-1">
               Need attention
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-none shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-purple-50 to-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Pending Orders
             </CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+            <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+              <ShoppingCart className="h-5 w-5 text-purple-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingOrders}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold">{stats.pendingOrders}</div>
+            <p className="text-xs text-muted-foreground mt-1">
               Ready to ship
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-none shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-green-50 to-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Monthly Revenue
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+              <DollarSign className="h-5 w-5 text-green-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold">
               ${stats.monthlyRevenue.toFixed(2)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground mt-1">
               This month
             </p>
           </CardContent>
@@ -157,47 +167,68 @@ export default async function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <Card>
+      <Card className="border-none shadow-md">
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>
-            Manage your Etsy shop
+          <CardTitle className="text-2xl">Quick Actions</CardTitle>
+          <CardDescription className="text-base">
+            Jump right into managing your Etsy shop
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
-            <a
+            <Link
               href="/products"
-              className="flex flex-col gap-2 p-4 border rounded-lg hover:bg-accent transition-colors"
+              className="group flex flex-col gap-3 p-6 border-2 rounded-xl hover:border-blue-500 hover:shadow-md transition-all bg-gradient-to-br from-blue-50/50 to-white"
             >
-              <Package className="h-6 w-6 text-primary" />
-              <h3 className="font-semibold">Manage Inventory</h3>
-              <p className="text-sm text-muted-foreground">
-                Track stock levels and update products
-              </p>
-            </a>
+              <div className="flex items-center justify-between">
+                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                  <Package className="h-6 w-6 text-blue-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg mb-1">Manage Inventory</h3>
+                <p className="text-sm text-muted-foreground">
+                  Track stock levels and update products
+                </p>
+              </div>
+            </Link>
 
-            <a
+            <Link
               href="/orders"
-              className="flex flex-col gap-2 p-4 border rounded-lg hover:bg-accent transition-colors"
+              className="group flex flex-col gap-3 p-6 border-2 rounded-xl hover:border-purple-500 hover:shadow-md transition-all bg-gradient-to-br from-purple-50/50 to-white"
             >
-              <ShoppingCart className="h-6 w-6 text-primary" />
-              <h3 className="font-semibold">Process Orders</h3>
-              <p className="text-sm text-muted-foreground">
-                Fulfill orders and add tracking
-              </p>
-            </a>
+              <div className="flex items-center justify-between">
+                <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                  <ShoppingCart className="h-6 w-6 text-purple-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-purple-600 group-hover:translate-x-1 transition-all" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg mb-1">Process Orders</h3>
+                <p className="text-sm text-muted-foreground">
+                  Fulfill orders and add tracking
+                </p>
+              </div>
+            </Link>
 
-            <a
-              href="/settings"
-              className="flex flex-col gap-2 p-4 border rounded-lg hover:bg-accent transition-colors"
+            <Link
+              href="/analytics"
+              className="group flex flex-col gap-3 p-6 border-2 rounded-xl hover:border-green-500 hover:shadow-md transition-all bg-gradient-to-br from-green-50/50 to-white"
             >
-              <AlertCircle className="h-6 w-6 text-primary" />
-              <h3 className="font-semibold">Etsy Connection</h3>
-              <p className="text-sm text-muted-foreground">
-                Connect or sync your Etsy shop
-              </p>
-            </a>
+              <div className="flex items-center justify-between">
+                <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-green-600 group-hover:translate-x-1 transition-all" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg mb-1">Profit Calculator</h3>
+                <p className="text-sm text-muted-foreground">
+                  Calculate profit after Etsy fees
+                </p>
+              </div>
+            </Link>
           </div>
         </CardContent>
       </Card>
