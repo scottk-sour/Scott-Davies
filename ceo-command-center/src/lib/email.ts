@@ -4,7 +4,7 @@ if (!process.env.RESEND_API_KEY) {
   console.warn('RESEND_API_KEY is not set. Email functionality will not work.')
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key')
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_build_key_00000000000000000000')
 
 type SendEmailOptions = {
   to: string
