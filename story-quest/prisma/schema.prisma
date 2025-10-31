@@ -1,0 +1,594 @@
+// Therapeutic Story Platform - Prisma Schema
+// Designed for trauma-informed storytelling for children in care
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER & AUTHENTICATION
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?   // Hashed with bcrypt
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(PARENT)
+
+  // Relationships
+  children             Child[]
+  professional         Professional?
+  institutionalLicense InstitutionalLicense?
+  safeguardingLogs     SafeguardingLog[]
+
+  // Preferences
+  emailNotifications Boolean   @default(true)
+  weeklyReport       Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+enum UserRole {
+  PARENT
+  PROFESSIONAL  // Social workers, therapists, teachers
+  ADMIN
+}
+
+// ============================================================================
+// PROFESSIONAL VERIFICATION
+// ============================================================================
+
+model Professional {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Professional Details
+  jobTitle         String
+  organization     String
+  dbsCheckNumber   String?        // Disclosure and Barring Service
+  dbsCheckDate     DateTime?
+  dbsCheckExpiry   DateTime?
+  qualifications   String[]       // Array of qualifications
+
+  // Verification Status
+  verified         Boolean        @default(false)
+  verifiedAt       DateTime?
+  verifiedBy       String?        // Admin user ID who verified
+
+  // Access & Permissions
+  canAccessReports Boolean        @default(true)
+  canAddNotes      Boolean        @default(true)
+  maxChildren      Int            @default(50)  // Maximum children they can work with
+
+  // Relationships
+  childAssignments ChildProfessionalAssignment[]
+  therapeuticNotes TherapeuticNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([verified])
+}
+
+// ============================================================================
+// CHILDREN & CARE STATUS
+// ============================================================================
+
+model Child {
+  id       String   @id @default(cuid())
+  userId   String   // Parent/Guardian user ID
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Basic Info
+  name     String
+  age      Int
+  avatar   String?
+  ageGroup AgeGroup
+
+  // Care Status (for free access eligibility)
+  careStatus          CareStatus  @default(NOT_IN_CARE)
+  careStatusVerified  Boolean     @default(false)
+  careStatusDocument  String?     // URL to verification document (encrypted)
+  localAuthorityRef   String?     // LA reference number
+  socialWorkerContact String?
+
+  // Therapeutic Profile
+  traumaHistory       String[]    // Tags: abuse, neglect, loss, etc.
+  triggers            String[]    // Known triggers to avoid
+  therapeuticGoals    String[]    // Goals for their journey
+
+  // Relationships
+  professionalAssignments ChildProfessionalAssignment[]
+  readingSessions         ReadingSession[]
+  quizResults             QuizResult[]
+  achievements            ChildAchievement[]
+  therapeuticNotes        TherapeuticNote[]
+
+  // Settings
+  audioSpeed          Float       @default(1.0)
+  autoPlay            Boolean     @default(true)
+  contentWarnings     Boolean     @default(true)  // Show content warnings
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([careStatus])
+}
+
+enum AgeGroup {
+  AGES_4_6
+  AGES_7_10
+}
+
+enum CareStatus {
+  NOT_IN_CARE
+  FOSTER_CARE
+  KINSHIP_CARE
+  RESIDENTIAL_CARE
+  ADOPTED_FROM_CARE
+  SPECIAL_GUARDIANSHIP
+}
+
+// Assignment of professional to child
+model ChildProfessionalAssignment {
+  id String @id @default(cuid())
+
+  childId        String
+  child          Child        @relation(fields: [childId], references: [id], onDelete: Cascade)
+  professionalId String
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  role           String       // e.g., "Social Worker", "Therapist", "Teacher"
+  startDate      DateTime     @default(now())
+  endDate        DateTime?
+  active         Boolean      @default(true)
+
+  @@unique([childId, professionalId])
+  @@index([childId])
+  @@index([professionalId])
+}
+
+// ============================================================================
+// STORIES - Therapeutic Content
+// ============================================================================
+
+model Story {
+  id String @id @default(cuid())
+
+  // Basic Info
+  title          String
+  subtitle       String?
+  description    String
+  coverImage     String
+
+  // Categorization
+  ageGroup       AgeGroup[]
+  category       StoryCategory
+
+  // THERAPEUTIC SPECIFIC
+  therapeuticThemes    TherapeuticTheme[]
+  traumaTopics         TraumaTopic[]
+  contentWarnings      String[]        // Specific warnings for triggers
+  healingGoals         String[]        // What this story helps with
+  professionalGuidance String?         // Guidance for professionals
+
+  // Content
+  content        Json            // Story structure (nodes, choices)
+  audioFiles     Json?           // URLs to audio segments
+
+  // Metadata
+  author         String
+  illustrator    String?
+  narrator       String?
+  reviewedBy     String?         // Professional who reviewed content
+
+  // Conversation Guides
+  conversationGuides ConversationGuide[]
+
+  // Learning & Emotional Content
+  vocabulary     String[]
+  emotionalSkills String[]       // e.g., "identifying feelings", "expressing needs"
+  copingStrategies String[]
+
+  // Status
+  status         StoryStatus     @default(DRAFT)
+  featured       Boolean         @default(false)
+  requiresVerification Boolean   @default(false) // Needs professional supervision
+
+  // Pricing (free for children in care)
+  freeForCareChildren Boolean    @default(true)
+
+  // Stats
+  playCount      Int             @default(0)
+  averageRating  Float?
+  helpfulCount   Int             @default(0)
+
+  // Relations
+  readingSessions ReadingSession[]
+  quizzes         Quiz[]
+  reviews         Review[]
+
+  // SEO
+  slug           String          @unique
+
+  publishedAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([status, featured])
+  @@index([slug])
+}
+
+enum StoryCategory {
+  SAFETY_SECURITY     // Finding safety, feeling secure
+  FEELINGS_EMOTIONS   // Understanding and expressing emotions
+  TRUST_RELATIONSHIPS // Building trust, healthy relationships
+  RESILIENCE_STRENGTH // Overcoming challenges, inner strength
+  IDENTITY_BELONGING  // Who am I, where do I belong
+  HEALING_GROWTH      // Processing trauma, growing stronger
+}
+
+enum TherapeuticTheme {
+  SAFETY
+  TRUST
+  EMPOWERMENT
+  SELF_WORTH
+  EMOTIONAL_REGULATION
+  ATTACHMENT
+  BOUNDARIES
+  RESILIENCE
+  HOPE
+  HEALING
+}
+
+enum TraumaTopic {
+  PHYSICAL_ABUSE
+  EMOTIONAL_ABUSE
+  NEGLECT
+  SEPARATION_LOSS
+  DOMESTIC_VIOLENCE
+  SUBSTANCE_ABUSE
+  HOMELESSNESS
+  MULTIPLE_PLACEMENTS
+  GRIEF_BEREAVEMENT
+}
+
+enum StoryStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+// ============================================================================
+// CONVERSATION GUIDES (for professionals)
+// ============================================================================
+
+model ConversationGuide {
+  id      String @id @default(cuid())
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  title         String
+  section       String        // "Before Reading", "During", "After"
+  questions     String[]      // Open-ended questions
+  activities    String[]      // Suggested activities
+  observations  String[]      // What to watch for
+  responses     Json?         // How to respond to different reactions
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storyId])
+}
+
+// ============================================================================
+// READING SESSIONS & PROGRESS
+// ============================================================================
+
+model ReadingSession {
+  id      String @id @default(cuid())
+  childId String
+  child   Child  @relation(fields: [childId], references: [id], onDelete: Cascade)
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  // Progress
+  startedAt      DateTime  @default(now())
+  completedAt    DateTime?
+  duration       Int?      // seconds
+
+  // Journey through story
+  choicesMade    Json      // Array of choice IDs
+  endingReached  String?   // Which ending
+  nodesVisited   String[]  // All nodes they visited
+
+  // Engagement
+  pauseCount     Int       @default(0)
+  replayCount    Int       @default(0)
+  skippedAudio   Boolean   @default(false)
+
+  // Emotional Response (optional, child can select)
+  emotionalResponse String? // "happy", "sad", "confused", "scared", "hopeful"
+  helpfulRating     Int?    // 1-5 stars
+
+  @@index([childId, storyId])
+  @@index([childId, completedAt])
+}
+
+// ============================================================================
+// QUIZZES & ASSESSMENTS
+// ============================================================================
+
+model Quiz {
+  id      String @id @default(cuid())
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  title         String
+  questions     Json          // Array of questions
+  passingScore  Int           @default(70)
+
+  results       QuizResult[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storyId])
+}
+
+model QuizResult {
+  id      String @id @default(cuid())
+  childId String
+  child   Child  @relation(fields: [childId], references: [id], onDelete: Cascade)
+  quizId  String
+  quiz    Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  score         Int       // 0-100
+  answers       Json      // Array of answers
+  passed        Boolean
+  attempts      Int       @default(1)
+
+  completedAt DateTime @default(now())
+
+  @@index([childId, quizId])
+}
+
+// ============================================================================
+// ACHIEVEMENTS
+// ============================================================================
+
+model Achievement {
+  id String @id @default(cuid())
+
+  name          String
+  description   String
+  icon          String
+  type          AchievementType
+  requirement   Json        // Conditions to unlock
+
+  children      ChildAchievement[]
+
+  createdAt DateTime @default(now())
+}
+
+model ChildAchievement {
+  id String @id @default(cuid())
+
+  childId       String
+  child         Child       @relation(fields: [childId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  earnedAt DateTime @default(now())
+
+  @@unique([childId, achievementId])
+  @@index([childId])
+}
+
+enum AchievementType {
+  STORIES_READ
+  PERFECT_QUIZ
+  STREAK
+  EXPLORER
+  EMOTIONAL_GROWTH
+  SPECIAL
+}
+
+// ============================================================================
+// THERAPEUTIC NOTES (Professional observations)
+// ============================================================================
+
+model TherapeuticNote {
+  id String @id @default(cuid())
+
+  childId        String
+  child          Child        @relation(fields: [childId], references: [id], onDelete: Cascade)
+  professionalId String
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  // Note Content
+  noteType       NoteType
+  content        String        // The actual note
+  storyId        String?       // If related to specific story
+  sessionDate    DateTime
+
+  // Observations
+  emotionalState String?
+  engagement     String?
+  concerns       String[]
+  progress       String?
+
+  // Privacy
+  sharedWithParent Boolean @default(false)
+  confidential     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([childId])
+  @@index([professionalId])
+}
+
+enum NoteType {
+  OBSERVATION
+  PROGRESS
+  CONCERN
+  BREAKTHROUGH
+  REVIEW
+}
+
+// ============================================================================
+// SAFEGUARDING LOGS
+// ============================================================================
+
+model SafeguardingLog {
+  id String @id @default(cuid())
+
+  // Who reported
+  reporterId String
+  reporter   User   @relation(fields: [reporterId], references: [id])
+
+  // What happened
+  eventType     SafeguardingEventType
+  description   String
+  severity      SafeguardingSeverity
+
+  // Context
+  childId       String?
+  storyId       String?
+  ipAddress     String?
+  userAgent     String?
+
+  // Actions taken
+  actionTaken   String?
+  resolved      Boolean   @default(false)
+  resolvedAt    DateTime?
+  resolvedBy    String?
+
+  createdAt DateTime @default(now())
+
+  @@index([eventType])
+  @@index([severity])
+  @@index([createdAt])
+}
+
+enum SafeguardingEventType {
+  INAPPROPRIATE_CONTENT
+  SUSPICIOUS_BEHAVIOR
+  DATA_BREACH
+  ACCESS_VIOLATION
+  CHILD_CONCERN
+  SYSTEM_ALERT
+}
+
+enum SafeguardingSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// ============================================================================
+// INSTITUTIONAL LICENSING (Local Authorities, Schools)
+// ============================================================================
+
+model InstitutionalLicense {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Organization
+  organizationType  OrganizationType
+  organizationName  String
+  localAuthorityRef String?
+  ofstedRating      String?
+
+  // Contact
+  contactName       String
+  contactEmail      String
+  contactPhone      String?
+  billingAddress    String
+
+  // License Details
+  seats             Int              @default(50)
+  seatsUsed         Int              @default(0)
+  licenseType       LicenseType
+
+  // Pricing
+  annualFee         Float
+
+  // Status
+  status            LicenseStatus    @default(ACTIVE)
+  validFrom         DateTime         @default(now())
+  validUntil        DateTime
+
+  // Stripe integration
+  stripeSubscriptionId String?       @unique
+  stripeCustomerId     String?       @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+enum OrganizationType {
+  LOCAL_AUTHORITY
+  FOSTER_AGENCY
+  RESIDENTIAL_HOME
+  SCHOOL
+  CHARITY
+  NHS_TRUST
+}
+
+enum LicenseType {
+  STANDARD      // 50 seats, £2,500/year
+  LARGE         // 100 seats, £4,500/year
+  ENTERPRISE    // 250+ seats, £9,999/year
+  PILOT         // Free trial for 3 months
+}
+
+enum LicenseStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  CANCELED
+}
+
+// ============================================================================
+// REVIEWS
+// ============================================================================
+
+model Review {
+  id      String @id @default(cuid())
+  userId  String
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  rating    Int       // 1-5 stars
+  helpful   Boolean?  // Was this story helpful?
+  comment   String?
+
+  // Professional review
+  professionalReview Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, storyId])
+  @@index([storyId, rating])
+}
