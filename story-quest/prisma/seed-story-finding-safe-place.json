@@ -1,0 +1,462 @@
+{
+  "story": {
+    "title": "Finding My Safe Place",
+    "subtitle": "A story about feeling safe and finding comfort",
+    "description": "Join Luna the little bunny as she learns about feeling safe, finding comfort, and discovering that it's okay to ask for help. This gentle story helps children explore what makes them feel safe and secure.",
+    "coverImage": "/images/stories/safe-place-cover.jpg",
+    "slug": "finding-my-safe-place",
+    "author": "StoryQuest Team",
+    "illustrator": "Emma Thompson",
+    "narrator": "AI Narrator (Warm & Gentle)",
+    "reviewedBy": "Dr. Sarah Mitchell, Child Psychologist",
+
+    "ageGroup": ["AGES_4_6"],
+    "category": "SAFETY_SECURITY",
+    "duration": 10,
+    "wordCount": 850,
+
+    "therapeuticThemes": ["SAFETY", "TRUST", "EMOTIONAL_REGULATION", "RESILIENCE"],
+    "traumaTopics": ["SEPARATION_LOSS", "EMOTIONAL_ABUSE"],
+
+    "contentWarnings": [
+      "This story gently addresses feeling unsafe and finding comfort",
+      "Contains themes about being away from home and feeling worried",
+      "Includes positive resolution and coping strategies"
+    ],
+
+    "healingGoals": [
+      "Recognizing what makes us feel safe",
+      "Understanding that it's okay to ask for help",
+      "Learning to identify safe people",
+      "Building strategies for managing worry",
+      "Developing trust in caregivers"
+    ],
+
+    "professionalGuidance": "This story is designed to help children identify their own safe places and safe people. It normalizes feelings of worry and fear while providing positive coping strategies. Use the conversation guide to explore the child's personal experiences with safety and comfort.",
+
+    "status": "PUBLISHED",
+    "featured": true,
+    "freeForCareChildren": true,
+
+    "content": {
+      "nodes": [
+        {
+          "id": "start",
+          "type": "scene",
+          "text": "Luna was a little bunny with soft grey fur and big, worried eyes. One day, she found herself in a new place—a cozy house with warm lights and soft blankets. But Luna didn't feel safe yet. Her heart was beating fast, and her ears were drooping down. 'Where is my safe place?' she wondered.",
+          "image": "/images/stories/luna-worried.jpg",
+          "audio": "/audio/stories/safe-place/scene-01.mp3",
+          "emotionalTone": "serious",
+          "choices": [
+            {
+              "id": "choice-1a",
+              "text": "Look around the new house",
+              "icon": "🏠",
+              "nextNode": "explore-house",
+              "therapeuticNote": "Child is taking initiative to explore their environment"
+            },
+            {
+              "id": "choice-1b",
+              "text": "Find a quiet corner to sit",
+              "icon": "🛋️",
+              "nextNode": "quiet-corner",
+              "therapeuticNote": "Child is seeking comfort through withdrawal - normal response"
+            }
+          ]
+        },
+
+        {
+          "id": "explore-house",
+          "type": "scene",
+          "text": "Luna hopped slowly around the house. She saw a soft rug, some toys, and a big comfy chair. There was also a kind person sitting by the window, reading a book. The person looked up and smiled at Luna. 'Hello, little one,' they said gently. 'Would you like to look around?'",
+          "image": "/images/stories/luna-exploring.jpg",
+          "audio": "/audio/stories/safe-place/scene-02a.mp3",
+          "emotionalTone": "hopeful",
+          "choices": [
+            {
+              "id": "choice-2a",
+              "text": "Hop closer to the kind person",
+              "icon": "❤️",
+              "nextNode": "meet-caregiver",
+              "therapeuticNote": "Building trust with caregiver"
+            },
+            {
+              "id": "choice-2b",
+              "text": "Keep exploring on your own",
+              "icon": "🔍",
+              "nextNode": "discover-toys",
+              "therapeuticNote": "Maintaining autonomy while exploring"
+            }
+          ]
+        },
+
+        {
+          "id": "quiet-corner",
+          "type": "scene",
+          "text": "Luna found a quiet corner behind a soft cushion. She curled up small and closed her eyes. Her heart was still beating fast. After a little while, she heard gentle footsteps. 'It's okay to feel worried,' a soft voice said. 'I'm here if you need anything.' Luna peeked out. The kind person sat down nearby, not too close, just there.",
+          "image": "/images/stories/luna-corner.jpg",
+          "audio": "/audio/stories/safe-place/scene-02b.mp3",
+          "emotionalTone": "calm",
+          "choices": [
+            {
+              "id": "choice-2c",
+              "text": "Stay in the corner a bit longer",
+              "icon": "🌙",
+              "nextNode": "take-time",
+              "therapeuticNote": "Respecting need for space and time"
+            },
+            {
+              "id": "choice-2d",
+              "text": "Peek out at the kind person",
+              "icon": "👀",
+              "nextNode": "first-contact",
+              "therapeuticNote": "Beginning to engage when ready"
+            }
+          ]
+        },
+
+        {
+          "id": "meet-caregiver",
+          "type": "scene",
+          "text": "Luna hopped a little closer. The kind person put down their book and spoke in a soft, gentle voice. 'My name is Alex. I'm here to help you feel safe. You can take all the time you need.' Alex showed Luna a special soft blanket. 'This can be yours if you'd like. Would you like to touch it?'",
+          "image": "/images/stories/alex-and-luna.jpg",
+          "audio": "/audio/stories/safe-place/scene-03a.mp3",
+          "emotionalTone": "hopeful",
+          "choices": [
+            {
+              "id": "choice-3a",
+              "text": "Touch the soft blanket",
+              "icon": "🧸",
+              "nextNode": "accept-comfort",
+              "therapeuticNote": "Accepting comfort object"
+            },
+            {
+              "id": "choice-3b",
+              "text": "Ask Alex a question",
+              "icon": "💬",
+              "nextNode": "ask-question",
+              "therapeuticNote": "Using verbal communication to build trust"
+            }
+          ]
+        },
+
+        {
+          "id": "discover-toys",
+          "type": "scene",
+          "text": "Luna found a box of toys in the corner. There was a little stuffed bear with button eyes, some colorful blocks, and a music box that played gentle tunes. Luna's ears perked up a little bit. She carefully touched the music box, and it played a soft, peaceful song.",
+          "image": "/images/stories/luna-toys.jpg",
+          "audio": "/audio/stories/safe-place/scene-03b.mp3",
+          "emotionalTone": "curious",
+          "choices": [
+            {
+              "id": "choice-3c",
+              "text": "Play with the toys",
+              "icon": "🎨",
+              "nextNode": "play-time",
+              "therapeuticNote": "Using play as self-soothing"
+            },
+            {
+              "id": "choice-3d",
+              "text": "Show Alex what you found",
+              "icon": "🎁",
+              "nextNode": "share-discovery",
+              "therapeuticNote": "Initiating social connection"
+            }
+          ]
+        },
+
+        {
+          "id": "take-time",
+          "type": "scene",
+          "text": "Luna stayed in her cozy corner. That was okay. Alex stayed nearby, reading quietly. Sometimes Alex would softly say, 'I'm still here if you need me.' Luna's breathing became slower and calmer. She realized that Alex wasn't rushing her. She could take all the time she needed.",
+          "image": "/images/stories/luna-resting.jpg",
+          "audio": "/audio/stories/safe-place/scene-03c.mp3",
+          "emotionalTone": "calm",
+          "choices": [
+            {
+              "id": "choice-3e",
+              "text": "Come out when you're ready",
+              "icon": "🌟",
+              "nextNode": "ready-to-emerge",
+              "therapeuticNote": "Self-regulating and emerging when ready"
+            }
+          ]
+        },
+
+        {
+          "id": "first-contact",
+          "type": "scene",
+          "text": "Luna peeked out from behind the cushion. Alex was still there, smiling softly. 'Hello, Luna,' Alex said. 'I see you. Would you like some water? Or maybe we could sit together quietly?' Alex's voice was gentle and patient, never loud or scary.",
+          "image": "/images/stories/luna-peeking.jpg",
+          "audio": "/audio/stories/safe-place/scene-03d.mp3",
+          "emotionalTone": "hopeful",
+          "choices": [
+            {
+              "id": "choice-3f",
+              "text": "Hop out and sit near Alex",
+              "icon": "🐰",
+              "nextNode": "sitting-together",
+              "therapeuticNote": "Beginning to trust and connect"
+            }
+          ]
+        },
+
+        {
+          "id": "accept-comfort",
+          "type": "scene",
+          "text": "Luna touched the soft blanket with her paw. It was warm and cozy, just like a hug. 'This is your special blanket,' Alex said. 'Whenever you feel worried, you can wrap yourself in it. It's here to help you feel safe.' Luna pulled the blanket close and felt a tiny bit warmer inside.",
+          "image": "/images/stories/luna-blanket.jpg",
+          "audio": "/audio/stories/safe-place/scene-04a.mp3",
+          "emotionalTone": "calm",
+          "choices": [
+            {
+              "id": "choice-4a",
+              "text": "Snuggle into the blanket",
+              "icon": "💤",
+              "nextNode": "peaceful-ending",
+              "therapeuticNote": "Self-soothing with comfort object"
+            }
+          ]
+        },
+
+        {
+          "id": "ask-question",
+          "type": "scene",
+          "text": "Luna took a brave breath and asked in a small voice, 'Will you... stay here?' Alex smiled warmly. 'Yes, Luna. I'll stay here. I'm not going anywhere. And if you ever feel worried or scared, you can always tell me. I'm here to listen and help you feel safe.'",
+          "image": "/images/stories/alex-promise.jpg",
+          "audio": "/audio/stories/safe-place/scene-04b.mp3",
+          "emotionalTone": "hopeful",
+          "choices": [
+            {
+              "id": "choice-4b",
+              "text": "Feel a bit safer",
+              "icon": "❤️",
+              "nextNode": "trusting-ending",
+              "therapeuticNote": "Building trust through reassurance"
+            }
+          ]
+        },
+
+        {
+          "id": "play-time",
+          "type": "scene",
+          "text": "Luna played gently with the toys. She stacked the blocks and listened to the music box. Playing helped her feel a little bit better. Alex watched from nearby with a gentle smile. 'You're doing great, Luna,' Alex said softly. 'Playing is a wonderful way to help yourself feel better.'",
+          "image": "/images/stories/luna-playing.jpg",
+          "audio": "/audio/stories/safe-place/scene-04c.mp3",
+          "emotionalTone": "joyful",
+          "choices": [
+            {
+              "id": "choice-4c",
+              "text": "Invite Alex to play too",
+              "icon": "🤝",
+              "nextNode": "play-together",
+              "therapeuticNote": "Initiating shared activity"
+            }
+          ]
+        },
+
+        {
+          "id": "share-discovery",
+          "type": "scene",
+          "text": "Luna hopped over to Alex with the little stuffed bear. 'Look what I found!' she said, her voice a bit braver now. Alex's eyes lit up. 'What a special find! Would you like to tell me about it?' Luna felt proud that she had something to share.",
+          "image": "/images/stories/luna-sharing.jpg",
+          "audio": "/audio/stories/safe-place/scene-04d.mp3",
+          "emotionalTone": "hopeful",
+          "choices": [
+            {
+              "id": "choice-4d",
+              "text": "Tell Alex about the bear",
+              "icon": "💬",
+              "nextNode": "connected-ending",
+              "therapeuticNote": "Building connection through sharing"
+            }
+          ]
+        },
+
+        {
+          "id": "ready-to-emerge",
+          "type": "scene",
+          "text": "After a while, Luna felt ready to come out. She hopped slowly out from her corner. Alex looked up and smiled. 'I'm so proud of you, Luna. You took the time you needed, and now you're ready to explore. That's very brave.' Luna's ears perked up just a little.",
+          "image": "/images/stories/luna-emerging.jpg",
+          "audio": "/audio/stories/safe-place/scene-04e.mp3",
+          "emotionalTone": "hopeful",
+          "choices": [
+            {
+              "id": "choice-4e",
+              "text": "Explore the house with Alex",
+              "icon": "🌈",
+              "nextNode": "brave-ending",
+              "therapeuticNote": "Taking steps with support"
+            }
+          ]
+        },
+
+        {
+          "id": "sitting-together",
+          "type": "scene",
+          "text": "Luna hopped out and sat near Alex, not too close, but not too far either. They sat together quietly for a while. Sometimes silence is okay too. Alex occasionally said gentle things like, 'You're doing wonderfully,' and 'I'm glad you're here.' Luna felt her heart slow down a little.",
+          "image": "/images/stories/sitting-together.jpg",
+          "audio": "/audio/stories/safe-place/scene-04f.mp3",
+          "emotionalTone": "calm",
+          "choices": [
+            {
+              "id": "choice-4f",
+              "text": "Stay sitting together",
+              "icon": "✨",
+              "nextNode": "peaceful-ending",
+              "therapeuticNote": "Co-regulation through presence"
+            }
+          ]
+        },
+
+        {
+          "id": "play-together",
+          "type": "scene",
+          "text": "Alex sat down on the floor and they played together. Alex was gentle and let Luna choose what to do. They built towers with blocks and made them fall down - crash! Luna even giggled a tiny bit. Playing together felt good and safe.",
+          "image": "/images/stories/playing-together.jpg",
+          "audio": "/audio/stories/safe-place/scene-05.mp3",
+          "emotionalTone": "joyful",
+          "choices": [
+            {
+              "id": "choice-5a",
+              "text": "Keep playing",
+              "icon": "🎉",
+              "nextNode": "connected-ending"
+            }
+          ]
+        }
+      ],
+
+      "endings": [
+        {
+          "id": "peaceful-ending",
+          "text": "That night, Luna curled up in her new bed with her special blanket wrapped around her. The room was quiet and peaceful. Alex checked on her and whispered, 'Goodnight, Luna. You're safe here. I'll be just down the hall if you need me.' Luna closed her eyes and felt something new: a tiny spark of peace. She was starting to find her safe place. And tomorrow, she would explore a little more. One day at a time.",
+          "image": "/images/stories/luna-sleeping.jpg",
+          "audio": "/audio/stories/safe-place/ending-01.mp3",
+          "achievement": "peaceful-heart",
+          "message": "You did it! Luna learned that it's okay to take time to feel safe. And so can you. 🌟"
+        },
+
+        {
+          "id": "trusting-ending",
+          "text": "Luna learned something important that day: it's okay to ask for help. When we feel worried or scared, we can tell safe people how we feel. Alex kept their promise and stayed nearby. Day by day, Luna's heart felt a little lighter. She was learning to trust again. 'You're so brave, Luna,' Alex said. And Luna realized - maybe she was brave after all. Finding your safe place takes time, and that's perfectly okay.",
+          "image": "/images/stories/luna-trusting.jpg",
+          "audio": "/audio/stories/safe-place/ending-02.mp3",
+          "achievement": "trust-builder",
+          "message": "Amazing work! Luna discovered that asking for help is brave. You can too! 💙"
+        },
+
+        {
+          "id": "connected-ending",
+          "text": "Luna and Alex played together until the stars came out. Luna felt something warm and happy growing in her chest. She had found something special: a safe person who listened, who was patient, and who cared. 'I think I'm starting to feel safe,' Luna whispered. Alex smiled. 'I'm so glad, Luna. And remember, if you ever feel worried again, I'm here. You're not alone.' Luna snuggled close and realized: safe places aren't just spaces - they're also people who care about us.",
+          "image": "/images/stories/luna-happy.jpg",
+          "audio": "/audio/stories/safe-place/ending-03.mp3",
+          "achievement": "connection-maker",
+          "message": "Wonderful! Luna found that safe people can be part of our safe place. You found this too! 🌈"
+        },
+
+        {
+          "id": "brave-ending",
+          "text": "Luna took a deep breath and hopped around the house with Alex by her side. Room by room, she explored. She found a cozy reading nook, a sunny window spot, and a soft rug to play on. 'These are all places where you can feel safe,' Alex explained. 'And you know what makes them even more safe? Having someone who cares about you nearby.' Luna's whiskers twitched with a small smile. She was finding her safe places, one hop at a time. And she was very, very brave.",
+          "image": "/images/stories/luna-brave.jpg",
+          "audio": "/audio/stories/safe-place/ending-04.mp3",
+          "achievement": "brave-explorer",
+          "message": "You're amazing! Luna discovered she was braver than she thought. So are you! 🌟"
+        }
+      ]
+    },
+
+    "conversationGuides": [
+      {
+        "section": "before",
+        "title": "Before Reading: Setting the Stage",
+        "questions": [
+          "Have you ever been somewhere new? How did it feel?",
+          "What makes you feel safe and cozy?",
+          "Who are the people who help you feel safe?"
+        ],
+        "activities": [
+          "Ask the child to show you their favorite safe spot in the house",
+          "Let them choose a comfort item to hold during the story"
+        ],
+        "observations": [
+          "Notice the child's comfort level discussing new places",
+          "Observe any anxiety or avoidance around the topic",
+          "Note any comfort objects they naturally reach for"
+        ]
+      },
+
+      {
+        "section": "during",
+        "title": "During Reading: Engagement Points",
+        "questions": [
+          "What do you think Luna is feeling right now?",
+          "What would you do if you were Luna?",
+          "Is Alex being kind to Luna? How can you tell?"
+        ],
+        "activities": [
+          "Pause when Luna makes choices and ask what the child would choose",
+          "Notice when the child relates to Luna's feelings",
+          "Acknowledge any emotions the child expresses"
+        ],
+        "observations": [
+          "Which choices does the child make? (seeking comfort, exploring, connecting)",
+          "How engaged is the child with the story?",
+          "Do they identify with Luna's feelings?",
+          "Any signs of distress or triggering?"
+        ]
+      },
+
+      {
+        "section": "after",
+        "title": "After Reading: Processing and Integration",
+        "questions": [
+          "How do you think Luna feels at the end?",
+          "What helped Luna start to feel safer?",
+          "Do you have a 'safe person' like Alex in your life?",
+          "What are YOUR safe places?",
+          "If you felt worried like Luna, what could you do?"
+        ],
+        "activities": [
+          "Draw or describe their own safe place",
+          "Make a list of their safe people",
+          "Create a 'calm down plan' with comfort strategies",
+          "Practice asking for help: 'Can you help me feel safe?'"
+        ],
+        "observations": [
+          "Can the child identify their own safe people/places?",
+          "Do they have strategies for self-soothing?",
+          "How comfortable are they asking for help?",
+          "Any insights into their attachment patterns?"
+        ]
+      }
+    ]
+  },
+
+  "achievements": [
+    {
+      "name": "Peaceful Heart",
+      "description": "Completed a story about finding safety",
+      "icon": "💙",
+      "type": "STORIES_READ"
+    },
+    {
+      "name": "Trust Builder",
+      "description": "Learned about trusting safe people",
+      "icon": "🤝",
+      "type": "EMOTIONAL_GROWTH"
+    },
+    {
+      "name": "Connection Maker",
+      "description": "Discovered the power of connection",
+      "icon": "🌈",
+      "type": "EMOTIONAL_GROWTH"
+    },
+    {
+      "name": "Brave Explorer",
+      "description": "Took brave steps to explore",
+      "icon": "⭐",
+      "type": "EMOTIONAL_GROWTH"
+    }
+  ]
+}
