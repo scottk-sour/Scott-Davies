@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { requireAuth } from '@/lib/auth'
 import { childSchema } from '@/lib/validations/child'
-import { z } from 'zod'
 import { getAgeGroup } from '@/lib/utils'
+import { handleApiError, successResponse, UnauthorizedError } from '@/lib/api-errors'
 
 // GET /api/children - List all children for current user
 export async function GET(request: NextRequest) {
@@ -36,17 +36,9 @@ export async function GET(request: NextRequest) {
       readingSessions: undefined, // Remove from response
     }))
 
-    return NextResponse.json({ children: childrenWithStats })
+    return successResponse({ children: childrenWithStats })
   } catch (error) {
-    if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    console.error('GET /api/children error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch children' },
-      { status: 500 }
-    )
+    return handleApiError(error)
   }
 }
 
@@ -80,23 +72,8 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ child }, { status: 201 })
+    return successResponse({ child }, 201)
   } catch (error) {
-    if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
-        { status: 400 }
-      )
-    }
-
-    console.error('POST /api/children error:', error)
-    return NextResponse.json(
-      { error: 'Failed to create child' },
-      { status: 500 }
-    )
+    return handleApiError(error)
   }
 }

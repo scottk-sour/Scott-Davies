@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { handleApiError, successResponse } from '@/lib/api-errors'
 
 // GET /api/stories - List published stories
 export async function GET(request: NextRequest) {
@@ -39,12 +40,8 @@ export async function GET(request: NextRequest) {
       orderBy: [{ featured: 'desc' }, { createdAt: 'desc' }],
     })
 
-    return NextResponse.json({ stories })
+    return successResponse({ stories })
   } catch (error) {
-    console.error('GET /api/stories error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch stories' },
-      { status: 500 }
-    )
+    return handleApiError(error)
   }
 }
