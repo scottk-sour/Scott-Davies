@@ -7,15 +7,16 @@ import { z } from 'zod'
 // PATCH /api/reading-sessions/:id - Update session progress
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await requireAuth()
 
     // Verify session belongs to user
     const readingSession = await prisma.readingSession.findFirst({
       where: {
-        id: params.id,
+        id: id,
         child: {
           userId: session.user.id,
         },
@@ -31,7 +32,7 @@ export async function PATCH(
 
     // Update session
     const updated = await prisma.readingSession.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         choicesMade: validated.choicesMade,
         nodesVisited: validated.nodesVisited,
@@ -62,15 +63,16 @@ export async function PATCH(
 // POST /api/reading-sessions/:id/complete - Complete session
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await requireAuth()
 
     // Verify session belongs to user
     const readingSession = await prisma.readingSession.findFirst({
       where: {
-        id: params.id,
+        id: id,
         child: {
           userId: session.user.id,
         },
@@ -94,7 +96,7 @@ export async function POST(
 
     // Complete session
     const completed = await prisma.readingSession.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         completedAt: new Date(),
         duration,
