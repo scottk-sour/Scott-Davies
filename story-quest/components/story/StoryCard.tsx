@@ -23,7 +23,7 @@ interface StoryCardProps {
 
 export function StoryCard({ story }: StoryCardProps) {
   return (
-    <Link href={`/dashboard/stories/${story.slug}`}>
+    <Link href={`/stories/${story.slug}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
         {/* Cover Image */}
         <div className="relative h-48 w-full bg-gray-100">
