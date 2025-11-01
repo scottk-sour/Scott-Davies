@@ -103,15 +103,15 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {totalChildren === 0 ? (
-              <Link href="/dashboard/children">
+              <Link href="/children">
                 <Button className="w-full">Add Your First Child</Button>
               </Link>
             ) : (
               <>
-                <Link href="/dashboard/stories">
+                <Link href="/stories">
                   <Button className="w-full">Browse Stories</Button>
                 </Link>
-                <Link href="/dashboard/children">
+                <Link href="/children">
                   <Button variant="outline" className="w-full">
                     View Children
                   </Button>
@@ -170,7 +170,7 @@ export default async function DashboardPage() {
               {children.slice(0, 3).map((child) => (
                 <Link
                   key={child.id}
-                  href={`/dashboard/children/${child.id}`}
+                  href={`/children/${child.id}`}
                   className="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
