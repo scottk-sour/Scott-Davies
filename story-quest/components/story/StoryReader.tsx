@@ -39,6 +39,20 @@ export function StoryReader({
 
   const currentAudio = currentNode?.audio || audioFiles?.[currentNodeId]
 
+  // Debug: Log current node data
+  useEffect(() => {
+    console.log('=== DEBUG: Current Node ===')
+    console.log('Node ID:', currentNodeId)
+    console.log('Current Node:', currentNode)
+    console.log('Has text field?', currentNode && 'text' in currentNode)
+    console.log('Has content field?', currentNode && 'content' in currentNode)
+    if (currentNode) {
+      console.log('Text value:', (currentNode as any).text)
+      console.log('Content value:', (currentNode as any).content)
+      console.log('All keys:', Object.keys(currentNode))
+    }
+  }, [currentNodeId, currentNode])
+
   // Save progress periodically
   useEffect(() => {
     const saveProgress = async () => {
