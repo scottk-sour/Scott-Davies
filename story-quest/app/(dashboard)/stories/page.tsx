@@ -39,7 +39,7 @@ export default function StoriesPage() {
 
       const response = await fetch(`/api/stories?${params.toString()}`)
       const data = await response.json()
-      setStories(data.data?.stories || [])
+      setStories(data.stories || [])
     } catch (error) {
       console.error('Failed to fetch stories:', error)
     } finally {

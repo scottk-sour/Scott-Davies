@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -11,11 +11,10 @@ import Image from 'next/image'
 import { ContentWarning } from '@/components/story/ContentWarning'
 
 interface StoryDetailProps {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
 
 export default function StoryDetailPage({ params }: StoryDetailProps) {
-  const { slug } = use(params)
   const router = useRouter()
   const [story, setStory] = useState<any>(null)
   const [children, setChildren] = useState<any[]>([])
@@ -26,11 +25,11 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
   useEffect(() => {
     fetchStory()
     fetchChildren()
-  }, [slug])
+  }, [params.slug])
 
   const fetchStory = async () => {
     try {
-      const response = await fetch(`/api/stories/${slug}`)
+      const response = await fetch(`/api/stories/${params.slug}`)
       const data = await response.json()
       setStory(data.story)
     } catch (error) {
@@ -79,7 +78,7 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
       })
 
       const data = await response.json()
-      router.push(`/stories/${slug}/read?session=${data.session.id}`)
+      router.push(`/dashboard/stories/${params.slug}/read?session=${data.session.id}`)
     } catch (error) {
       console.error('Failed to start session:', error)
       alert('Failed to start reading session')
@@ -98,7 +97,7 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-600">Story not found</p>
-        <Link href="/stories">
+        <Link href="/dashboard/stories">
           <Button className="mt-4">Back to Stories</Button>
         </Link>
       </div>
@@ -109,7 +108,7 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
     <div>
       {/* Back Link */}
       <Link
-        href="/stories"
+        href="/dashboard/stories"
         className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-6"
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
@@ -173,7 +172,7 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
                   <p className="text-gray-600 mb-4">
                     Please add a child profile first
                   </p>
-                  <Link href="/children">
+                  <Link href="/dashboard/children">
                     <Button>Add Child</Button>
                   </Link>
                 </div>
@@ -260,7 +259,7 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
           }}
           onDecline={() => {
             setShowWarning(false)
-            router.push('/stories')
+            router.push('/dashboard/stories')
           }}
         />
       )}
