@@ -191,7 +191,7 @@ export function StoryReader({
                     isEnding ? 'text-center' : ''
                   }`}
                 >
-                  {currentNode.text}
+                  {currentNode.text || (currentNode as any).content}
                 </div>
 
                 {/* Audio Player */}
