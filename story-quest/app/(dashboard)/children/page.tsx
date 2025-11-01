@@ -31,7 +31,7 @@ export default function ChildrenPage() {
     try {
       const response = await fetch('/api/children')
       const data = await response.json()
-      setChildren(data.children || [])
+      setChildren(data.data?.children || [])
     } catch (error) {
       console.error('Failed to fetch children:', error)
     } finally {
@@ -146,7 +146,7 @@ export default function ChildrenPage() {
                   </div>
 
                   <div className="flex gap-2 pt-3">
-                    <Link href={`/dashboard/children/${child.id}`} className="flex-1">
+                    <Link href={`/children/${child.id}`} className="flex-1">
                       <Button variant="outline" size="sm" className="w-full">
                         View Profile
                       </Button>
