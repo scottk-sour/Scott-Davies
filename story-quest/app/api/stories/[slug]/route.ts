@@ -4,12 +4,13 @@ import { prisma } from '@/lib/prisma'
 // GET /api/stories/:slug - Get single story
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params
     const story = await prisma.story.findUnique({
       where: {
-        slug: params.slug,
+        slug,
         status: 'PUBLISHED',
       },
       include: {
