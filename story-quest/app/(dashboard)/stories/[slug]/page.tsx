@@ -44,9 +44,13 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
     try {
       const response = await fetch('/api/children')
       const data = await response.json()
+      console.log('Fetched children:', data.children)
       setChildren(data.children || [])
       if (data.children?.length > 0) {
+        console.log('Setting selected child to:', data.children[0].id)
         setSelectedChildId(data.children[0].id)
+      } else {
+        console.log('No children found')
       }
     } catch (error) {
       console.error('Failed to fetch children:', error)
@@ -54,7 +58,11 @@ export default function StoryDetailPage({ params }: StoryDetailProps) {
   }
 
   const handleStartReading = () => {
+    console.log('Start reading clicked. Selected child ID:', selectedChildId)
+    console.log('Children:', children)
+
     if (!selectedChildId) {
+      console.log('No child selected!')
       alert('Please select a child first')
       return
     }
