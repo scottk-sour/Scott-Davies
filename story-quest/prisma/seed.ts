@@ -1,5 +1,10 @@
+import { config } from 'dotenv'
+import { resolve } from 'path'
 import { PrismaClient } from '@prisma/client'
 import storyData from './seed-story-finding-safe-place.json'
+
+// Load environment variables from .env.local
+config({ path: resolve(__dirname, '../.env.local') })
 
 const prisma = new PrismaClient()
 

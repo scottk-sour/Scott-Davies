@@ -10,13 +10,13 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params
     const session = await requireAuth()
+    const { id } = await params
 
     // Verify session belongs to user
     const readingSession = await prisma.readingSession.findFirst({
       where: {
-        id: id,
+        id,
         child: {
           userId: session.user.id,
         },
@@ -32,7 +32,7 @@ export async function PATCH(
 
     // Update session
     const updated = await prisma.readingSession.update({
-      where: { id: id },
+      where: { id },
       data: {
         choicesMade: validated.choicesMade,
         nodesVisited: validated.nodesVisited,
@@ -66,13 +66,13 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params
     const session = await requireAuth()
+    const { id } = await params
 
     // Verify session belongs to user
     const readingSession = await prisma.readingSession.findFirst({
       where: {
-        id: id,
+        id,
         child: {
           userId: session.user.id,
         },
@@ -96,7 +96,7 @@ export async function POST(
 
     // Complete session
     const completed = await prisma.readingSession.update({
-      where: { id: id },
+      where: { id },
       data: {
         completedAt: new Date(),
         duration,

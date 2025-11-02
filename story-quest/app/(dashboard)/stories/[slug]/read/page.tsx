@@ -1,15 +1,14 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { StoryReader } from '@/components/story/StoryReader'
 
 interface ReadingPageProps {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
 
 export default function ReadingPage({ params }: ReadingPageProps) {
-  const { slug } = use(params)
   const router = useRouter()
   const searchParams = useSearchParams()
   const sessionId = searchParams?.get('session')
@@ -27,7 +26,7 @@ export default function ReadingPage({ params }: ReadingPageProps) {
     try {
       // For now, we'll fetch the story and session separately
       // In a real app, the session API would return everything needed
-      const storyResponse = await fetch(`/api/stories/${slug}`)
+      const storyResponse = await fetch(`/api/stories/${params.slug}`)
       const storyData = await storyResponse.json()
 
       setSession({
@@ -38,7 +37,7 @@ export default function ReadingPage({ params }: ReadingPageProps) {
     } catch (error) {
       console.error('Failed to fetch session:', error)
       alert('Failed to load reading session')
-      router.push('/stories')
+      router.push('/dashboard/stories')
     } finally {
       setIsLoading(false)
     }
@@ -46,11 +45,11 @@ export default function ReadingPage({ params }: ReadingPageProps) {
 
   const handleComplete = (endingId: string) => {
     // Show completion message and redirect
-    router.push(`/stories?completed=true`)
+    router.push(`/dashboard/stories?completed=true`)
   }
 
   const handleExit = () => {
-    router.push('/stories')
+    router.push('/dashboard/stories')
   }
 
   if (isLoading) {

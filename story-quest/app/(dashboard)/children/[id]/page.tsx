@@ -10,7 +10,7 @@ import { Book, Award, TrendingUp, User } from 'lucide-react'
 export default async function ChildProfilePage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const session = await auth()
 
@@ -18,9 +18,10 @@ export default async function ChildProfilePage({
     redirect('/login')
   }
 
+  const { id } = await params
   const child = await prisma.child.findFirst({
     where: {
-      id: params.id,
+      id,
       userId: session.user.id,
     },
     include: {

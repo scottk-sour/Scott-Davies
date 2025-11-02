@@ -15,7 +15,7 @@ export async function GET(
 
     const child = await prisma.child.findFirst({
       where: {
-        id: id,
+        id,
         userId: session.user.id,
       },
       include: {
@@ -74,7 +74,7 @@ export async function PATCH(
     // Verify ownership
     const existing = await prisma.child.findFirst({
       where: {
-        id: id,
+        id,
         userId: session.user.id,
       },
     })
@@ -87,7 +87,7 @@ export async function PATCH(
     const validated = updateChildSchema.parse(body)
 
     const child = await prisma.child.update({
-      where: { id: id },
+      where: { id },
       data: validated,
       select: {
         id: true,
@@ -133,7 +133,7 @@ export async function DELETE(
     // Verify ownership
     const existing = await prisma.child.findFirst({
       where: {
-        id: id,
+        id,
         userId: session.user.id,
       },
     })
@@ -143,7 +143,7 @@ export async function DELETE(
     }
 
     await prisma.child.delete({
-      where: { id: id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true })
