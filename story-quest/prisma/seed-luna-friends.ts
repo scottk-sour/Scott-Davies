@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import storyData from './seed-story-luna-makes-friends.json'
-
-const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Starting seed for Luna Makes New Friends...')
