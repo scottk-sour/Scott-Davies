@@ -222,20 +222,21 @@ export function StoryReader({
                       What would you like to do?
                     </p>
                     {currentNode.choices.map((choice) => (
-                      <motion.button
-                        key={choice.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleChoice(choice.id, choice.nextNode)}
-                        className="w-full p-4 rounded-xl border-2 border-purple-200 bg-white hover:border-purple-400 hover:bg-purple-50 transition-colors text-left"
-                      >
-                        <div className="flex items-center gap-3">
-                          {choice.icon && (
-                            <span className="text-2xl">{choice.icon}</span>
-                          )}
-                          <span className="text-lg font-medium">{choice.text}</span>
-                        </div>
-                      </motion.button>
+                      <div key={choice.id}>
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => handleChoice(choice.id, choice.nextNode)}
+                          className="w-full p-4 rounded-xl border-2 border-purple-200 bg-white hover:border-purple-400 hover:bg-purple-50 transition-colors text-left"
+                        >
+                          <div className="flex items-center gap-3">
+                            {choice.icon && (
+                              <span className="text-2xl">{choice.icon}</span>
+                            )}
+                            <span className="text-lg font-medium">{choice.text}</span>
+                          </div>
+                        </motion.button>
+                      </div>
                     ))}
                   </div>
                 )}
