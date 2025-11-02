@@ -7,14 +7,15 @@ import { z } from 'zod'
 // GET /api/children/:id - Get single child
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await requireAuth()
 
     const child = await prisma.child.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       include: {
@@ -64,15 +65,16 @@ export async function GET(
 // PATCH /api/children/:id - Update child
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await requireAuth()
 
     // Verify ownership
     const existing = await prisma.child.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
     })
@@ -85,7 +87,7 @@ export async function PATCH(
     const validated = updateChildSchema.parse(body)
 
     const child = await prisma.child.update({
-      where: { id: params.id },
+      where: { id: id },
       data: validated,
       select: {
         id: true,
@@ -122,15 +124,16 @@ export async function PATCH(
 // DELETE /api/children/:id - Delete child
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await requireAuth()
 
     // Verify ownership
     const existing = await prisma.child.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
     })
@@ -140,7 +143,7 @@ export async function DELETE(
     }
 
     await prisma.child.delete({
-      where: { id: params.id },
+      where: { id: id },
     })
 
     return NextResponse.json({ success: true })
