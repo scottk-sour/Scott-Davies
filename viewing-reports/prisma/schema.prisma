@@ -1,0 +1,229 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Users (Estate Agents)
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  phone         String?
+  role          UserRole  @default(AGENT)
+
+  // Agency relationship
+  agencyId      String?
+  agency        Agency?   @relation(fields: [agencyId], references: [id])
+
+  // Relationships
+  properties    Property[]
+  viewings      Viewing[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([agencyId])
+  @@index([email])
+}
+
+enum UserRole {
+  AGENT
+  AGENCY_ADMIN
+}
+
+// Agencies
+model Agency {
+  id                String        @id @default(cuid())
+  name              String
+  address           String?
+  phone             String?
+  logoUrl           String?
+  brandColor        String?       @default("#10b981")
+
+  // Subscription
+  subscriptionId    String?
+  subscription      Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  // Relationships
+  users             User[]
+  properties        Property[]
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+// Subscriptions
+model Subscription {
+  id                  String            @id @default(cuid())
+  stripeSubscriptionId String?          @unique
+  plan                SubscriptionPlan  @default(SOLO)
+  status              SubscriptionStatus @default(ACTIVE)
+  seatsUsed           Int               @default(1)
+  seatsTotal          Int               @default(1)
+  currentPeriodEnd    DateTime?
+
+  // Relationships
+  agencies            Agency[]
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+enum SubscriptionPlan {
+  SOLO
+  AGENCY
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  TRIALING
+}
+
+// Properties
+model Property {
+  id            String          @id @default(cuid())
+
+  // Address
+  address       String
+  postcode      String
+  propertyType  PropertyType
+
+  // Vendor details
+  vendorName    String
+  vendorEmail   String?
+  vendorPhone   String?
+
+  // Status
+  status        PropertyStatus  @default(ACTIVE)
+
+  // Agency relationship
+  agencyId      String
+  agency        Agency          @relation(fields: [agencyId], references: [id])
+
+  // Agent who added it
+  addedById     String
+  addedBy       User            @relation(fields: [addedById], references: [id])
+
+  // Relationships
+  viewings      Viewing[]
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([agencyId])
+  @@index([addedById])
+  @@index([postcode])
+  @@index([status])
+}
+
+enum PropertyType {
+  HOUSE
+  FLAT
+  BUNGALOW
+  TERRACED
+  SEMI_DETACHED
+  DETACHED
+  COTTAGE
+  MAISONETTE
+  OTHER
+}
+
+enum PropertyStatus {
+  ACTIVE
+  SOLD
+  WITHDRAWN
+  LET
+}
+
+// Viewings
+model Viewing {
+  id                String    @id @default(cuid())
+
+  // Property & Agent
+  propertyId        String
+  property          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  agentId           String
+  agent             User      @relation(fields: [agentId], references: [id])
+
+  // Viewing details
+  viewingDate       DateTime
+
+  // Viewer details
+  viewerName        String
+  viewerEmail       String?
+  viewerPhone       String?
+
+  // Ratings (1-5)
+  interestLevel     Int       // How interested were they?
+  financialPosition Int       // Are they ready to buy?
+  seriousness       Int       // How serious are they?
+
+  // Notes
+  notes             String?   @db.Text  // Agent's text/voice notes
+  voiceNoteUrl      String?   // URL to audio recording (optional)
+  feedbackPositive  String?   @db.Text  // What did they like?
+  feedbackNegative  String?   @db.Text  // Any concerns?
+
+  // Relationships
+  photos            ViewingPhoto[]
+  report            Report?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([propertyId])
+  @@index([agentId])
+  @@index([viewingDate])
+}
+
+// Viewing Photos
+model ViewingPhoto {
+  id          String   @id @default(cuid())
+
+  viewingId   String
+  viewing     Viewing  @relation(fields: [viewingId], references: [id], onDelete: Cascade)
+
+  photoUrl    String   // Cloudflare R2 URL
+  caption     String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([viewingId])
+}
+
+// Generated Reports
+model Report {
+  id                String       @id @default(cuid())
+
+  viewingId         String       @unique
+  viewing           Viewing      @relation(fields: [viewingId], references: [id], onDelete: Cascade)
+
+  generatedContent  String       @db.Text  // The AI-generated report
+  format            ReportFormat @default(EMAIL)
+
+  // Delivery tracking
+  sentAt            DateTime?
+  openedAt          DateTime?
+  emailDelivered    Boolean      @default(false)
+  smsDelivered      Boolean      @default(false)
+
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@index([viewingId])
+  @@index([sentAt])
+}
+
+enum ReportFormat {
+  EMAIL
+  PDF
+}
