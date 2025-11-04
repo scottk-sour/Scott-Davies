@@ -1,0 +1,555 @@
+// RoboSelect Database Schema
+// Robot recommendation and lead generation platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ROBOT & PRODUCT DATA
+// ============================================
+
+model Manufacturer {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  logo        String?
+  website     String?
+  robots      Robot[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model Industry {
+  id          String          @id @default(cuid())
+  name        String          @unique
+  slug        String          @unique
+  description String?         @db.Text
+  icon        String?
+  robots      RobotIndustry[]
+  assessments Assessment[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([slug])
+}
+
+model RobotType {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  slug        String           @unique
+  description String?          @db.Text
+  icon        String?
+  robots      RobotRobotType[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([slug])
+}
+
+model Robot {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  model          String?
+  tagline        String?
+  description    String?  @db.Text
+
+  // Relationships
+  manufacturerId String
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
+
+  // Media
+  thumbnail      String?
+  images         String[]
+  videoUrl       String?
+  videoThumbnail String?
+  brochureUrl    String?
+
+  // Specifications (stored as JSON for flexibility)
+  specifications Json?
+  features       String[]
+
+  // Pricing (stored in pence)
+  priceUpfront   Int
+  price2Year     Int
+  price3Year     Int
+  price5Year     Int
+
+  // Matching Algorithm Weights
+  matchWeights   Json?
+
+  // SEO
+  metaTitle      String?
+  metaDescription String? @db.Text
+
+  // Status
+  featured       Boolean  @default(false)
+  active         Boolean  @default(true)
+
+  // Relationships
+  industries     RobotIndustry[]
+  types          RobotRobotType[]
+  useCases       UseCase[]
+  quotes         QuoteItem[]
+  demos          Demo[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([slug])
+  @@index([featured, active])
+  @@index([manufacturerId])
+}
+
+// Many-to-many relationships
+model RobotIndustry {
+  robot      Robot    @relation(fields: [robotId], references: [id], onDelete: Cascade)
+  robotId    String
+  industry   Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  industryId String
+
+  @@id([robotId, industryId])
+  @@index([robotId])
+  @@index([industryId])
+}
+
+model RobotRobotType {
+  robot   Robot     @relation(fields: [robotId], references: [id], onDelete: Cascade)
+  robotId String
+  type    RobotType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  typeId  String
+
+  @@id([robotId, typeId])
+  @@index([robotId])
+  @@index([typeId])
+}
+
+model UseCase {
+  id          String   @id @default(cuid())
+  robotId     String
+  robot       Robot    @relation(fields: [robotId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String   @db.Text
+  benefits    String[]
+  images      String[]
+
+  order       Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([robotId])
+  @@index([robotId, order])
+}
+
+// ============================================
+// NEEDS ASSESSMENT (QUIZ)
+// ============================================
+
+model Assessment {
+  id        String   @id @default(cuid())
+
+  // Step 1: Industry
+  industryId String?
+  industry   Industry? @relation(fields: [industryId], references: [id])
+
+  // Step 2: Use cases (stored as array)
+  useCases   String[]
+
+  // Step 3: Venue details
+  floors     String?
+  venueSize  String?
+  dailyGuests String?
+  staffCount Int?
+
+  // Step 4: Priorities (1-5 rating for each)
+  priorityCost       Int?
+  priorityLabor      Int?
+  priorityExperience Int?
+  priorityMarketing  Int?
+  priorityEfficiency Int?
+
+  // Step 5: Budget & Timeline
+  budget     String?
+  timeline   String?
+  payment    String?
+
+  // Step 6: Contact (optional)
+  email      String?
+  phone      String?
+  companyName String?
+
+  // Matching Results (stored as JSON)
+  matchResults Json?
+
+  // Lead tracking
+  leadId     String?  @unique
+  lead       Lead?    @relation(fields: [leadId], references: [id])
+
+  // Metadata
+  ipAddress  String?
+  userAgent  String?
+  source     String?
+  utmSource  String?
+  utmMedium  String?
+  utmCampaign String?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([email])
+  @@index([createdAt])
+  @@index([leadId])
+}
+
+// ============================================
+// LEADS
+// ============================================
+
+model Lead {
+  id           String   @id @default(cuid())
+
+  // Contact info
+  email        String   @unique
+  phone        String?
+  companyName  String?
+  contactName  String?
+  address      String?
+
+  // Lead source
+  source       String?
+
+  // Status
+  status       LeadStatus @default(NEW)
+  nextAction   String?
+  nextActionDate DateTime?
+
+  // Notes
+  notes        String?  @db.Text
+
+  // Relationships
+  assessment   Assessment?
+  quotes       Quote[]
+  demos        Demo[]
+  activities   LeadActivity[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@index([nextActionDate])
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  DEMO_SCHEDULED
+  DEMO_COMPLETED
+  QUOTE_SENT
+  NEGOTIATING
+  WON
+  LOST
+  NURTURE
+}
+
+model LeadActivity {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  type      ActivityType
+  description String @db.Text
+  metadata  Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([leadId, createdAt])
+}
+
+enum ActivityType {
+  QUIZ_COMPLETED
+  QUOTE_REQUESTED
+  QUOTE_VIEWED
+  DEMO_REQUESTED
+  DEMO_COMPLETED
+  EMAIL_SENT
+  PHONE_CALL
+  NOTE_ADDED
+  STATUS_CHANGED
+}
+
+// ============================================
+// QUOTES
+// ============================================
+
+model Quote {
+  id           String   @id @default(cuid())
+  quoteNumber  String   @unique
+
+  // Customer
+  leadId       String
+  lead         Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  // Customer details (snapshot at time of quote)
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  companyName     String?
+  address         String?
+  industryType    String?
+
+  // Quote items
+  items        QuoteItem[]
+
+  // Pricing
+  subtotal     Int
+
+  // Options
+  extendedWarranty Boolean @default(false)
+  warrantyPrice    Int?
+  prioritySupport  Boolean @default(false)
+  supportPrice     Int?
+  extraTraining    Boolean @default(false)
+  trainingPrice    Int?
+
+  // Finance terms
+  financeTerm  String
+  monthlyPayment Int?
+  totalPrice   Int
+
+  // Status
+  status       QuoteStatus @default(DRAFT)
+  sentAt       DateTime?
+  viewedAt     DateTime?
+  viewCount    Int      @default(0)
+  acceptedAt   DateTime?
+  rejectedAt   DateTime?
+
+  // PDF
+  pdfUrl       String?
+
+  // ROI Calculation (saved for reference)
+  roiData      Json?
+
+  // Notes
+  internalNotes String? @db.Text
+
+  // Valid until
+  validUntil   DateTime?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([leadId])
+  @@index([quoteNumber])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+model QuoteItem {
+  id        String @id @default(cuid())
+  quoteId   String
+  quote     Quote  @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  robotId   String
+  robot     Robot  @relation(fields: [robotId], references: [id])
+
+  quantity  Int    @default(1)
+  unitPrice Int
+  lineTotal Int
+
+  @@index([quoteId])
+  @@index([robotId])
+}
+
+// ============================================
+// DEMOS
+// ============================================
+
+model Demo {
+  id          String   @id @default(cuid())
+
+  // Customer
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  // Customer details (snapshot)
+  customerName  String
+  customerEmail String
+  customerPhone String
+  companyName   String?
+
+  // Robot interest
+  robotId     String?
+  robot       Robot?   @relation(fields: [robotId], references: [id])
+  robotName   String?
+
+  // Scheduling
+  requestedDate DateTime
+  requestedTime String?
+  confirmedDate DateTime?
+  confirmedTime DateTime?
+
+  // Location
+  address     String
+  postcode    String?
+  city        String?
+
+  // Additional info
+  attendees   Int?     @default(1)
+  notes       String?  @db.Text
+
+  // Status
+  status      DemoStatus @default(REQUESTED)
+
+  // Completion (filled after demo)
+  completedAt DateTime?
+  howDidItGo  String?  @db.Text
+  interestLevel Int?
+  completionNotes String? @db.Text
+  nextSteps   String?  @db.Text
+
+  // Follow-up
+  followUpSent Boolean @default(false)
+  convertedToQuote Boolean @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([leadId])
+  @@index([status])
+  @@index([requestedDate])
+  @@index([confirmedDate])
+}
+
+enum DemoStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+// ============================================
+// CASE STUDIES
+// ============================================
+
+model CaseStudy {
+  id          String   @id @default(cuid())
+
+  title       String
+  slug        String   @unique
+
+  // Customer
+  customerName String
+  industry     String
+  location     String?
+  logo         String?
+
+  // Story
+  challenge    String  @db.Text
+  solution     String  @db.Text
+  results      String  @db.Text
+
+  // Metrics
+  metrics      Json?
+
+  // Media
+  images       String[]
+  videoUrl     String?
+
+  // Testimonial
+  testimonial  String? @db.Text
+  testimonialAuthor String?
+  testimonialRole   String?
+  testimonialPhoto  String?
+
+  // Related robots
+  robotIds     String[]
+
+  // SEO
+  metaTitle    String?
+  metaDescription String? @db.Text
+
+  // Status
+  featured     Boolean @default(false)
+  published    Boolean @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([slug])
+  @@index([featured, published])
+}
+
+// ============================================
+// ADMIN / SETTINGS
+// ============================================
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      AdminRole @default(ADMIN)
+
+  active    Boolean  @default(true)
+  lastLogin DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  VIEWER
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  subject   String
+  htmlBody  String   @db.Text
+  textBody  String   @db.Text
+  variables String[]
+
+  active    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model SiteSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+
+  updatedAt DateTime @updatedAt
+}
