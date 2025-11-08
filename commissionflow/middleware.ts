@@ -61,7 +61,10 @@ export async function middleware(req: NextRequest) {
   } = await supabase.auth.getSession()
 
   // Protected routes - require authentication
-  if (req.nextUrl.pathname.startsWith('/app')) {
+  const protectedPaths = ['/dashboard', '/commission-rules', '/deals', '/products', '/commissions', '/settings']
+  const isProtectedPath = protectedPaths.some(path => req.nextUrl.pathname.startsWith(path))
+
+  if (isProtectedPath) {
     if (!session) {
       const redirectUrl = new URL('/login', req.url)
       redirectUrl.searchParams.set('redirect', req.nextUrl.pathname)
@@ -72,7 +75,7 @@ export async function middleware(req: NextRequest) {
   // Auth routes - redirect to dashboard if already logged in
   if (req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/signup')) {
     if (session) {
-      return NextResponse.redirect(new URL('/app/dashboard', req.url))
+      return NextResponse.redirect(new URL('/dashboard', req.url))
     }
   }
 
@@ -80,5 +83,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/app/:path*', '/login', '/signup'],
+  matcher: ['/dashboard/:path*', '/commission-rules/:path*', '/deals/:path*', '/products/:path*', '/commissions/:path*', '/settings/:path*', '/login', '/signup'],
 }
