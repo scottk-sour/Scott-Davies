@@ -1,13 +1,9 @@
-import { Metadata } from 'next'
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { RulesList } from '@/components/commission/RulesList'
 import { Plus } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Commission Rules | CommissionFlow',
-  description: 'Manage your commission rules',
-}
 
 export default function CommissionRulesPage() {
   return (
