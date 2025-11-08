@@ -51,7 +51,7 @@ export default async function DealsPage() {
           </h1>
           <p className="text-gray-600 mt-1">Manage your sales pipeline</p>
         </div>
-        <Link href="/app/deals/new">
+        <Link href="/deals/new">
           <Button size="lg" className="shadow-md hover:shadow-lg transition-shadow">
             + Add New Deal
           </Button>

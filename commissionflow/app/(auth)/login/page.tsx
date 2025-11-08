@@ -35,7 +35,7 @@ export default function LoginPage() {
     }
 
     // Successful login
-    router.push('/app/dashboard')
+    router.push('/dashboard')
     router.refresh()
   }
 

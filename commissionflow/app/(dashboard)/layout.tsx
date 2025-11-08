@@ -38,7 +38,7 @@ export default async function DashboardLayout({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
-              <Link href="/app/dashboard" className="flex items-center hover:opacity-80 transition-opacity">
+              <Link href="/dashboard" className="flex items-center hover:opacity-80 transition-opacity">
                 <span className="text-2xl font-bold">💷</span>
                 <span className="ml-2 text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   CommissionFlow
@@ -46,10 +46,10 @@ export default async function DashboardLayout({
               </Link>
 
               <div className="hidden sm:ml-8 sm:flex sm:space-x-6">
-                <NavLink href="/app/dashboard">Dashboard</NavLink>
-                <NavLink href="/app/deals">Deals</NavLink>
-                <NavLink href="/app/reports">Reports</NavLink>
-                <NavLink href="/app/team">Team</NavLink>
+                <NavLink href="/dashboard">Dashboard</NavLink>
+                <NavLink href="/deals">Deals</NavLink>
+                <NavLink href="/reports">Reports</NavLink>
+                <NavLink href="/team">Team</NavLink>
               </div>
             </div>
 

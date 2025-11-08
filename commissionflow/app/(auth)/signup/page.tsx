@@ -72,7 +72,7 @@ export default function SignupPage() {
         }
 
         // Success - redirect to dashboard
-        router.push('/app/dashboard')
+        router.push('/dashboard')
         router.refresh()
       } catch (err: any) {
         setError(err.message)

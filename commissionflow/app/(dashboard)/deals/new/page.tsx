@@ -113,7 +113,7 @@ export default function NewDealPage() {
         description: `${formData.customerName} has been added successfully.`,
       })
 
-      router.push('/app/deals')
+      router.push('/deals')
       router.refresh()
     } catch (err: any) {
       setError(err.message)
