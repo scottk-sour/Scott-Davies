@@ -1,8 +1,10 @@
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase/client'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { ruleConflictDetector } from '@/lib/rule-conflict-detector'
 import type { CommissionRule } from '@/types/commission'
+import type { Database } from '@/types/database'
 import { z } from 'zod'
 
 // =====================================================
@@ -36,7 +38,25 @@ const createRuleSchema = z.object({
  */
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createServerClient()
+    const cookieStore = cookies()
+
+    const supabase = createServerClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value
+          },
+          set(name: string, value: string, options: any) {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name: string, options: any) {
+            cookieStore.set({ name, value: '', ...options })
+          },
+        },
+      }
+    )
 
     // Get current user
     const {
@@ -132,7 +152,25 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createServerClient()
+    const cookieStore = cookies()
+
+    const supabase = createServerClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value
+          },
+          set(name: string, value: string, options: any) {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name: string, options: any) {
+            cookieStore.set({ name, value: '', ...options })
+          },
+        },
+      }
+    )
 
     // Get current user
     const {
