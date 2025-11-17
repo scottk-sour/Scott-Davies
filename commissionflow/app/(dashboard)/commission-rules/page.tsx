@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button'
 import { RulesList } from '@/components/commission/RulesList'
 import { Plus } from 'lucide-react'
 
+// Force dynamic rendering to prevent build-time serialization errors
+export const dynamic = 'force-dynamic'
+
 export default function CommissionRulesPage() {
   return (
     <div className="space-y-6">
